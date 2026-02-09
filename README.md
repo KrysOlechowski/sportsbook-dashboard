@@ -150,6 +150,23 @@ The app simulates real-time behaviour where **odds change over time**.
 
 ---
 
+## Optional: Render Debug Counter (Level 4 proof)
+
+To enable `OddsButton` render counters in the browser console:
+
+1. Create `.env.local` in project root:
+   `NEXT_PUBLIC_RENDER_DEBUG=1`
+2. Restart dev server:
+   `npm run dev`
+3. Open browser DevTools Console and wait for live odds ticks.
+   You will see logs like:
+   `render:odds-button:<outcomeId>: <count>`
+
+Disable by removing the variable or setting:
+`NEXT_PUBLIC_RENDER_DEBUG=0`
+
+---
+
 ## 📝 Notes
 
 - `src/domain` contains pure domain logic (no React imports).

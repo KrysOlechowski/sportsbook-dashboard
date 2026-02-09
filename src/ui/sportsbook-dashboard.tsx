@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { memo, useEffect, useMemo } from "react";
 
 import {
   buildRandomOddsUpdates,
@@ -65,7 +65,7 @@ const selectOneXTwoOutcomeIdsByEventId =
     return state.marketsById[marketId]?.outcomeIds ?? EMPTY_OUTCOME_IDS;
   };
 
-function OddsButton({
+const OddsButton = memo(function OddsButton({
   eventId,
   outcomeId,
 }: {
@@ -104,6 +104,10 @@ function OddsButton({
   const isSelected = selectedOutcomeId === outcomeId;
   const hasUpPulse = pulse === "up";
   const hasDownPulse = pulse === "down";
+  if (process.env.NEXT_PUBLIC_RENDER_DEBUG === "1") {
+    // Optional proof for Level 4: only touched outcome buttons should re-render on ticks.
+    console.count(`render:odds-button:${outcomeId}`);
+  }
 
   return (
     <button
@@ -128,7 +132,7 @@ function OddsButton({
       <span>{locked ? "..." : formatOdds(odds)}</span>
     </button>
   );
-}
+});
 
 function BetSlip() {
   const selectionByEventId = useSportsbookStore((state) => state.selectionByEventId);
@@ -279,7 +283,7 @@ function BetSlip() {
   );
 }
 
-function EventRow({ eventId }: { eventId: EventId }) {
+const EventRow = memo(function EventRow({ eventId }: { eventId: EventId }) {
   const event = useSportsbookStore((state) => state.eventsById[eventId]);
   const oneXTwoOutcomeIds = useSportsbookStore(
     selectOneXTwoOutcomeIdsByEventId(eventId),
@@ -311,7 +315,7 @@ function EventRow({ eventId }: { eventId: EventId }) {
       </div>
     </li>
   );
-}
+});
 
 export function SportsbookDashboard({ initialSnapshot }: SportsbookDashboardProps) {
   const initializeSnapshot = useSportsbookStore(

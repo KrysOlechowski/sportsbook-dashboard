@@ -75,13 +75,13 @@ This roadmap mirrors the recruitment task levels (1–4). Focus on correctness, 
 
 ## Level 4 — Performance / render optimization
 
-- [ ] Odds ticks do NOT cause full list re-render
-- [ ] Strategy:
-  - [ ] store odds in a map keyed by `outcomeId`
-  - [ ] OddsButton subscribes only to its own `outcomeId` via selector
-  - [ ] avoid passing large nested objects down as props; prefer IDs + selectors
-- [ ] Add proof:
-  - [ ] console logs on OddsButton renders OR React Profiler notes/screenshot
+- [✅] Odds ticks do NOT cause full list re-render
+- [✅] Strategy:
+  - [✅] store odds in a map keyed by `outcomeId`
+  - [✅] OddsButton subscribes only to its own `outcomeId` via selector
+  - [✅] avoid passing large nested objects down as props; prefer IDs + selectors
+- [✅] Add proof:
+  - [✅] console logs on OddsButton renders OR React Profiler notes/screenshot
 
 ## Bonus — Cypress
 
