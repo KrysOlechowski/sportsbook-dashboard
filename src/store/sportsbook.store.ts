@@ -53,6 +53,42 @@ export type SportsbookActions = {
 
 export type SportsbookStore = SportsbookState & SportsbookActions;
 
+const buildSelectionMapWithoutEvent = (
+  selectionByEventId: Record<EventId, BetSelection>,
+  eventId: EventId,
+): Record<EventId, BetSelection> | null => {
+  if (!selectionByEventId[eventId]) {
+    return null;
+  }
+
+  const nextSelectionByEventId = { ...selectionByEventId };
+  delete nextSelectionByEventId[eventId];
+  return nextSelectionByEventId;
+};
+
+const isOutcomeLinkedToEvent = (
+  state: Pick<SportsbookState, "eventsById" | "marketsById" | "outcomesById">,
+  eventId: EventId,
+  outcomeId: OutcomeId,
+): boolean => {
+  const event = state.eventsById[eventId];
+  const outcome = state.outcomesById[outcomeId];
+  if (!event || !outcome || outcome.eventId !== eventId) {
+    return false;
+  }
+
+  if (!event.marketIds.includes(outcome.marketId)) {
+    return false;
+  }
+
+  const market = state.marketsById[outcome.marketId];
+  if (!market || market.eventId !== eventId) {
+    return false;
+  }
+
+  return market.outcomeIds.includes(outcomeId);
+};
+
 const EMPTY_SNAPSHOT: DomainSnapshot = {
   eventIds: [],
   eventsById: {},
@@ -79,7 +115,24 @@ export const useSportsbookStore = create<SportsbookStore>((set, get) => ({
     });
   },
   selectOutcome: (eventId, outcomeId) => {
-    const { selectionByEventId, oddsByOutcomeId, lockedByOutcomeId } = get();
+    const {
+      selectionByEventId,
+      oddsByOutcomeId,
+      lockedByOutcomeId,
+      eventsById,
+      marketsById,
+      outcomesById,
+    } = get();
+    if (
+      !isOutcomeLinkedToEvent(
+        { eventsById, marketsById, outcomesById },
+        eventId,
+        outcomeId,
+      )
+    ) {
+      return;
+    }
+
     const currentOdds = oddsByOutcomeId[outcomeId];
     if (lockedByOutcomeId[outcomeId] || !isValidOdds(currentOdds)) {
       return;
@@ -109,8 +162,14 @@ export const useSportsbookStore = create<SportsbookStore>((set, get) => ({
     const current = selectionByEventId[eventId];
 
     if (current?.outcomeId === outcomeId) {
-      const nextSelectionByEventId = { ...selectionByEventId };
-      delete nextSelectionByEventId[eventId];
+      const nextSelectionByEventId = buildSelectionMapWithoutEvent(
+        selectionByEventId,
+        eventId,
+      );
+      if (!nextSelectionByEventId) {
+        return;
+      }
+
       set({
         selectionByEventId: nextSelectionByEventId,
         lastReplacedEventId: null,
@@ -122,12 +181,14 @@ export const useSportsbookStore = create<SportsbookStore>((set, get) => ({
   },
   removeSelection: (eventId) => {
     const { selectionByEventId } = get();
-    if (!selectionByEventId[eventId]) {
+    const nextSelectionByEventId = buildSelectionMapWithoutEvent(
+      selectionByEventId,
+      eventId,
+    );
+    if (!nextSelectionByEventId) {
       return;
     }
 
-    const nextSelectionByEventId = { ...selectionByEventId };
-    delete nextSelectionByEventId[eventId];
     set({
       selectionByEventId: nextSelectionByEventId,
       lastReplacedEventId: null,

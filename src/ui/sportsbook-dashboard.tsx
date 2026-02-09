@@ -2,16 +2,13 @@
 
 import { memo, useEffect, useMemo, useState } from "react";
 
-import {
-  buildRandomOddsUpdates,
-  getRandomIntervalMs,
-  getRandomLockDurationMs,
-  isValidOdds,
-} from "@/domain/odds";
+import { isValidOdds } from "@/domain/odds";
 import { groupEventIdsByLeagueCategory } from "@/domain/grouping";
 import type { DomainSnapshot, EventId, OutcomeId } from "@/domain/types";
 import { getMobileBetSlipToggleLabel } from "@/ui/betslip-mobile";
+import { useLiveOddsTicker } from "@/ui/use-live-odds-ticker";
 import {
+  type BetSelection,
   selectHasOddsChanges,
   selectPotentialWin,
   selectTotalOdds,
@@ -158,13 +155,68 @@ const OddsButton = memo(function OddsButton({
   );
 });
 
+const BetSlipItem = memo(function BetSlipItem({
+  selection,
+  isReplaced,
+}: {
+  selection: BetSelection;
+  isReplaced: boolean;
+}) {
+  const event = useSportsbookStore((state) => state.eventsById[selection.eventId]);
+  const outcome = useSportsbookStore(
+    (state) => state.outcomesById[selection.outcomeId],
+  );
+  const currentOdds = useSportsbookStore(
+    (state) => state.oddsByOutcomeId[selection.outcomeId],
+  );
+  const removeSelection = useSportsbookStore((state) => state.removeSelection);
+
+  if (!event || !outcome) {
+    return null;
+  }
+
+  const selectedOddsSnapshot = selection.selectedOddsSnapshot;
+  const isCurrentOddsAvailable = isValidOdds(currentOdds);
+  const isOddsChanged =
+    !isCurrentOddsAvailable || currentOdds !== selectedOddsSnapshot;
+
+  return (
+    <li
+      className={`rounded-lg border p-3 transition-colors duration-300 ${
+        isReplaced ? "border-amber-400 bg-amber-100" : "border-zinc-200 bg-zinc-50"
+      }`}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <p className="text-sm font-semibold text-zinc-900">{event.name}</p>
+        <button
+          type="button"
+          aria-label={`Remove ${event.name} selection`}
+          onClick={() => removeSelection(selection.eventId)}
+          className="inline-flex h-6 w-6 items-center justify-center rounded border border-zinc-300 bg-white text-xs font-semibold text-zinc-700 hover:border-zinc-400"
+        >
+          X
+        </button>
+      </div>
+      <p className="mt-1 text-sm text-zinc-600">{outcome.name}</p>
+      <p className="mt-1 text-sm font-medium text-zinc-800">
+        Current: {isCurrentOddsAvailable ? formatOdds(currentOdds) : "N/A"}
+      </p>
+      <p className="mt-1 text-xs text-zinc-600">
+        Snapshot: {formatOdds(selectedOddsSnapshot)}
+      </p>
+      {isOddsChanged ? (
+        <p className="mt-2 inline-flex rounded bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-800">
+          {isCurrentOddsAvailable ? "Odds changed" : "Odds unavailable"}
+        </p>
+      ) : null}
+    </li>
+  );
+});
+
 function BetSlip() {
   const selectionByEventId = useSportsbookStore(
     (state) => state.selectionByEventId,
   );
-  const eventsById = useSportsbookStore((state) => state.eventsById);
-  const outcomesById = useSportsbookStore((state) => state.outcomesById);
-  const oddsByOutcomeId = useSportsbookStore((state) => state.oddsByOutcomeId);
   const lastReplacedEventId = useSportsbookStore(
     (state) => state.lastReplacedEventId,
   );
@@ -172,7 +224,6 @@ function BetSlip() {
     (state) => state.clearLastReplacedEventId,
   );
   const clearSelections = useSportsbookStore((state) => state.clearSelections);
-  const removeSelection = useSportsbookStore((state) => state.removeSelection);
   const stake = useSportsbookStore((state) => state.stake);
   const setStake = useSportsbookStore((state) => state.setStake);
   const totalOdds = useSportsbookStore(selectTotalOdds);
@@ -288,57 +339,14 @@ function BetSlip() {
       ) : (
         <ul className="mt-3 flex flex-col gap-2">
           {selections.map((selection) => {
-            const event = eventsById[selection.eventId];
-            const outcome = outcomesById[selection.outcomeId];
-            const currentOdds = oddsByOutcomeId[selection.outcomeId];
-            const selectedOddsSnapshot = selection.selectedOddsSnapshot;
             const isReplaced = selection.eventId === lastReplacedEventId;
-            const isCurrentOddsAvailable = isValidOdds(currentOdds);
-            const isOddsChanged =
-              !isCurrentOddsAvailable || currentOdds !== selectedOddsSnapshot;
-
-            if (!event || !outcome) {
-              return null;
-            }
 
             return (
-              <li
+              <BetSlipItem
                 key={selection.eventId}
-                className={`rounded-lg border p-3 transition-colors duration-300 ${
-                  isReplaced
-                    ? "border-amber-400 bg-amber-100"
-                    : "border-zinc-200 bg-zinc-50"
-                }`}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <p className="text-sm font-semibold text-zinc-900">
-                    {event.name}
-                  </p>
-                  <button
-                    type="button"
-                    aria-label={`Remove ${event.name} selection`}
-                    onClick={() => removeSelection(selection.eventId)}
-                    className="inline-flex h-6 w-6 items-center justify-center rounded border border-zinc-300 bg-white text-xs font-semibold text-zinc-700 hover:border-zinc-400"
-                  >
-                    X
-                  </button>
-                </div>
-                <p className="mt-1 text-sm text-zinc-600">{outcome.name}</p>
-                <p className="mt-1 text-sm font-medium text-zinc-800">
-                  Current:{" "}
-                  {isCurrentOddsAvailable ? formatOdds(currentOdds) : "N/A"}
-                </p>
-                <p className="mt-1 text-xs text-zinc-600">
-                  Snapshot: {formatOdds(selectedOddsSnapshot)}
-                </p>
-                {isOddsChanged ? (
-                  <p className="mt-2 inline-flex rounded bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-800">
-                    {isCurrentOddsAvailable
-                      ? "Odds changed"
-                      : "Odds unavailable"}
-                  </p>
-                ) : null}
-              </li>
+                selection={selection}
+                isReplaced={isReplaced}
+              />
             );
           })}
         </ul>
@@ -434,10 +442,6 @@ export function SportsbookDashboard({
   );
   const eventIds = useSportsbookStore((state) => state.eventIds);
   const eventsById = useSportsbookStore((state) => state.eventsById);
-  const applyOddsUpdates = useSportsbookStore(
-    (state) => state.applyOddsUpdates,
-  );
-  const setOutcomeLock = useSportsbookStore((state) => state.setOutcomeLock);
   const selectionCount = useSportsbookStore(
     (state) => Object.keys(state.selectionByEventId).length,
   );
@@ -449,49 +453,7 @@ export function SportsbookDashboard({
   useEffect(() => {
     initializeSnapshot(initialSnapshot);
   }, [initialSnapshot, initializeSnapshot]);
-
-  useEffect(() => {
-    const activeTimeoutIds: number[] = [];
-    let isActive = true;
-
-    const scheduleNextTick = () => {
-      const intervalMs = getRandomIntervalMs();
-
-      const tickTimeoutId = window.setTimeout(() => {
-        if (!isActive) {
-          return;
-        }
-
-        const { oddsByOutcomeId } = useSportsbookStore.getState();
-        const updates = buildRandomOddsUpdates(oddsByOutcomeId);
-        const lockDurationMs = getRandomLockDurationMs();
-
-        for (const update of updates) {
-          setOutcomeLock(update.outcomeId, true);
-        }
-
-        const applyTimeoutId = window.setTimeout(() => {
-          if (!isActive) {
-            return;
-          }
-          applyOddsUpdates(updates);
-        }, lockDurationMs);
-        activeTimeoutIds.push(applyTimeoutId);
-
-        scheduleNextTick();
-      }, intervalMs);
-      activeTimeoutIds.push(tickTimeoutId);
-    };
-
-    scheduleNextTick();
-
-    return () => {
-      isActive = false;
-      for (const timeoutId of activeTimeoutIds) {
-        window.clearTimeout(timeoutId);
-      }
-    };
-  }, [applyOddsUpdates, setOutcomeLock]);
+  useLiveOddsTicker();
 
   return (
     <main className="min-h-screen bg-zinc-100 p-4 md:p-8">

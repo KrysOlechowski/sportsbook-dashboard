@@ -2,7 +2,7 @@ import type { DomainSnapshot } from "@/domain/types";
 import { useSportsbookStore } from "@/store/sportsbook.store";
 
 const snapshot: DomainSnapshot = {
-  eventIds: ["event-1"],
+  eventIds: ["event-1", "event-2"],
   eventsById: {
     "event-1": {
       id: "event-1",
@@ -19,6 +19,21 @@ const snapshot: DomainSnapshot = {
       isCustomBetAvailable: false,
       marketIds: ["market-1"],
     },
+    "event-2": {
+      id: "event-2",
+      name: "Event 2",
+      startAt: 1767817900000,
+      eventType: 1,
+      category1Id: 1,
+      category2Id: 2,
+      category3Id: 4,
+      category1Name: "Sport",
+      category2Name: "Country",
+      category3Name: "League 2",
+      gamesCount: 1,
+      isCustomBetAvailable: false,
+      marketIds: ["market-2"],
+    },
   },
   marketsById: {
     "market-1": {
@@ -27,6 +42,13 @@ const snapshot: DomainSnapshot = {
       name: "1x2",
       type: 1,
       outcomeIds: ["outcome-1", "outcome-2", "outcome-3"],
+    },
+    "market-2": {
+      id: "market-2",
+      eventId: "event-2",
+      name: "1x2",
+      type: 1,
+      outcomeIds: ["outcome-4"],
     },
   },
   outcomesById: {
@@ -51,11 +73,19 @@ const snapshot: DomainSnapshot = {
       name: "Away",
       position: 2,
     },
+    "outcome-4": {
+      id: "outcome-4",
+      marketId: "market-2",
+      eventId: "event-2",
+      name: "Home 2",
+      position: 0,
+    },
   },
   oddsByOutcomeId: {
     "outcome-1": 1.5,
     "outcome-2": 3.2,
     "outcome-3": 6.4,
+    "outcome-4": 1.9,
   },
 };
 
@@ -142,6 +172,14 @@ describe("bet slip selection", () => {
 
     useSportsbookStore.getState().selectOutcome("event-1", "outcome-1");
     expect(useSportsbookStore.getState().selectionByEventId["event-1"]).toBeUndefined();
+  });
+
+  it("does not add selection when outcome does not belong to the event", () => {
+    useSportsbookStore.getState().selectOutcome("event-1", "outcome-4");
+
+    const state = useSportsbookStore.getState();
+    expect(state.selectionByEventId["event-1"]).toBeUndefined();
+    expect(state.selectionByEventId["event-2"]).toBeUndefined();
   });
 
   it("clears all selections with clearSelections", () => {
