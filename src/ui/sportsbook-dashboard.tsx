@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useEffect, useMemo } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 
 import {
   buildRandomOddsUpdates,
@@ -9,6 +9,7 @@ import {
 } from "@/domain/odds";
 import { groupEventIdsByLeagueCategory } from "@/domain/grouping";
 import type { DomainSnapshot, EventId, OutcomeId } from "@/domain/types";
+import { getMobileBetSlipToggleLabel } from "@/ui/betslip-mobile";
 import {
   selectHasOddsChanges,
   selectPotentialWin,
@@ -325,9 +326,13 @@ export function SportsbookDashboard({ initialSnapshot }: SportsbookDashboardProp
   const eventsById = useSportsbookStore((state) => state.eventsById);
   const applyOddsUpdates = useSportsbookStore((state) => state.applyOddsUpdates);
   const setOutcomeLock = useSportsbookStore((state) => state.setOutcomeLock);
+  const selectionCount = useSportsbookStore((state) =>
+    Object.keys(state.selectionByEventId).length,
+  );
   const eventGroups = useMemo(() => {
     return groupEventIdsByLeagueCategory(eventIds, eventsById);
   }, [eventIds, eventsById]);
+  const [isMobileBetSlipOpen, setIsMobileBetSlipOpen] = useState(false);
 
   useEffect(() => {
     initializeSnapshot(initialSnapshot);
@@ -403,9 +408,42 @@ export function SportsbookDashboard({ initialSnapshot }: SportsbookDashboardProp
               </section>
             ))}
           </div>
-          <BetSlip />
+          <div className="hidden lg:block">
+            <BetSlip />
+          </div>
         </div>
       </section>
+
+      <button
+        type="button"
+        onClick={() => setIsMobileBetSlipOpen(true)}
+        className="fixed right-4 bottom-4 z-30 rounded-full bg-zinc-900 px-4 py-3 text-sm font-semibold text-white shadow-lg lg:hidden"
+      >
+        {getMobileBetSlipToggleLabel(selectionCount)}
+      </button>
+
+      {isMobileBetSlipOpen ? (
+        <div className="fixed inset-0 z-40 lg:hidden">
+          <button
+            type="button"
+            aria-label="Close Bet Slip overlay"
+            onClick={() => setIsMobileBetSlipOpen(false)}
+            className="absolute inset-0 bg-black/40"
+          />
+          <div className="absolute inset-x-0 bottom-0 max-h-[85vh] overflow-y-auto rounded-t-2xl bg-white p-4 shadow-2xl">
+            <div className="mb-3 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setIsMobileBetSlipOpen(false)}
+                className="inline-flex h-8 w-8 items-center justify-center rounded border border-zinc-300 bg-white text-sm font-semibold text-zinc-700"
+              >
+                X
+              </button>
+            </div>
+            <BetSlip />
+          </div>
+        </div>
+      ) : null}
     </main>
   );
 }
