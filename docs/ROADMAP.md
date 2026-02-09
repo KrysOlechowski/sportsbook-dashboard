@@ -7,7 +7,7 @@ This roadmap mirrors the recruitment task levels (1–4). Focus on correctness, 
 - [✅] Scaffold Next.js App Router + TypeScript + Tailwind
 - [✅] Add data file: `src/data/betting_dashboard_data.json`
 - [✅] Define domain types (events, markets/games, outcomes)
-- [ ] Add Zustand store skeleton (market-agnostic domain, UI stays on 1x2)
+- [✅] Add Zustand store skeleton (market-agnostic domain, UI stays on 1x2)
 
 ## Level 1 — Events list
 
