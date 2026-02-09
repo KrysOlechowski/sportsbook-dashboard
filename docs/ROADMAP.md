@@ -11,12 +11,12 @@ This roadmap mirrors the recruitment task levels (1–4). Focus on correctness, 
 
 ## Level 1 — Events list
 
-- [ ] Parse JSON into normalized maps (events/markets/outcomes)
-- [ ] For each event show:
-  - [ ] eventName
-  - [ ] formatted eventStart
-  - [ ] odds buttons for `gameName === "1x2"`: 1 / X / 2 (with tooltips)
-- [ ] Optional: group by league/category
+- [✅] Parse JSON into normalized maps (events/markets/outcomes)
+- [✅] For each event show:
+  - [✅] eventName
+  - [✅] formatted eventStart
+  - [✅] odds buttons for `gameName === "1x2"`: 1 / X / 2 (with tooltips)
+- [ ] Optional: group by league/category (After level 2 and 3)
 
 ## Level 2 — Bet Slip
 
