@@ -45,7 +45,7 @@ This roadmap mirrors the recruitment task levels (1–4). Focus on correctness, 
 
 ### Tests (Jest)
 
-- [ ] Add `src/store/__tests__/betslip.oddsChanged.test.ts` (snapshot vs current + acceptAllChanges)
+- [✅] Add `src/store/__tests__/betslip.oddsChanged.test.ts` (snapshot vs current + acceptAllChanges)
 - [✅] Add `src/domain/__tests__/calculations.test.ts` (totalOdds/potentialWin from snapshots)
 
 ## Level 3 — Live simulation + odds changed (must-have)
