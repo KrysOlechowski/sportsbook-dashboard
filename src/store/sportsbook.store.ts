@@ -40,7 +40,9 @@ export type SportsbookActions = {
   initializeSnapshot: (snapshot: DomainSnapshot) => void;
   selectOutcome: (eventId: EventId, outcomeId: OutcomeId) => void;
   toggleOutcome: (eventId: EventId, outcomeId: OutcomeId) => void;
+
   removeSelection: (eventId: EventId) => void;
+  clearSelections: () => void;
   clearLastReplacedEventId: () => void;
   setStake: (value: number) => void;
   acceptAllChanges: () => void;
@@ -128,6 +130,12 @@ export const useSportsbookStore = create<SportsbookStore>((set, get) => ({
     delete nextSelectionByEventId[eventId];
     set({
       selectionByEventId: nextSelectionByEventId,
+      lastReplacedEventId: null,
+    });
+  },
+  clearSelections: () => {
+    set({
+      selectionByEventId: {},
       lastReplacedEventId: null,
     });
   },

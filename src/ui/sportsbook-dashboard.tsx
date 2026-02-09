@@ -76,13 +76,19 @@ const OddsButton = memo(function OddsButton({
 }) {
   const outcome = useSportsbookStore((state) => state.outcomesById[outcomeId]);
   const odds = useSportsbookStore((state) => state.oddsByOutcomeId[outcomeId]);
-  const pulse = useSportsbookStore((state) => state.pulseByOutcomeId[outcomeId]);
-  const locked = useSportsbookStore((state) => state.lockedByOutcomeId[outcomeId]);
+  const pulse = useSportsbookStore(
+    (state) => state.pulseByOutcomeId[outcomeId],
+  );
+  const locked = useSportsbookStore(
+    (state) => state.lockedByOutcomeId[outcomeId],
+  );
   const selectedOutcomeId = useSportsbookStore(
     (state) => state.selectionByEventId[eventId]?.outcomeId ?? null,
   );
   const toggleOutcome = useSportsbookStore((state) => state.toggleOutcome);
-  const clearOutcomePulse = useSportsbookStore((state) => state.clearOutcomePulse);
+  const clearOutcomePulse = useSportsbookStore(
+    (state) => state.clearOutcomePulse,
+  );
 
   useEffect(() => {
     if (!pulse) {
@@ -120,20 +126,24 @@ const OddsButton = memo(function OddsButton({
       onClick={() => toggleOutcome(eventId, outcomeId)}
       aria-pressed={isSelected}
       title={
-        locked ? "Updating odds..." : isOddsAvailable ? outcome.name : "Odds unavailable"
+        locked
+          ? "Updating odds..."
+          : isOddsAvailable
+            ? outcome.name
+            : "Odds unavailable"
       }
       className={`flex min-w-20 items-center justify-between rounded-md border px-3 py-2 text-sm font-medium transition-colors duration-300 ${
         locked
           ? "cursor-not-allowed border-zinc-300 bg-zinc-100 text-zinc-500"
           : !isOddsAvailable
             ? "cursor-not-allowed border-zinc-300 bg-zinc-100 text-zinc-500"
-          : hasUpPulse
-            ? "border-emerald-500 bg-emerald-100 text-emerald-900"
-          : hasDownPulse
-              ? "border-rose-500 bg-rose-100 text-rose-900"
-            : isSelected
-              ? "border-zinc-900 bg-zinc-900 text-white"
-              : "border-zinc-300 bg-white text-zinc-900 hover:border-zinc-400"
+            : hasUpPulse
+              ? "border-emerald-500 bg-emerald-100 text-emerald-900"
+              : hasDownPulse
+                ? "border-rose-500 bg-rose-100 text-rose-900"
+                : isSelected
+                  ? "border-zinc-900 bg-zinc-900 text-white"
+                  : "border-zinc-300 bg-white text-zinc-900 hover:border-zinc-400"
       }`}
     >
       <span>{label}</span>
@@ -143,25 +153,36 @@ const OddsButton = memo(function OddsButton({
 });
 
 function BetSlip() {
-  const selectionByEventId = useSportsbookStore((state) => state.selectionByEventId);
+  const selectionByEventId = useSportsbookStore(
+    (state) => state.selectionByEventId,
+  );
   const eventsById = useSportsbookStore((state) => state.eventsById);
   const outcomesById = useSportsbookStore((state) => state.outcomesById);
   const oddsByOutcomeId = useSportsbookStore((state) => state.oddsByOutcomeId);
-  const lastReplacedEventId = useSportsbookStore((state) => state.lastReplacedEventId);
+  const lastReplacedEventId = useSportsbookStore(
+    (state) => state.lastReplacedEventId,
+  );
   const clearLastReplacedEventId = useSportsbookStore(
     (state) => state.clearLastReplacedEventId,
   );
+  const clearSelections = useSportsbookStore((state) => state.clearSelections);
   const removeSelection = useSportsbookStore((state) => state.removeSelection);
   const stake = useSportsbookStore((state) => state.stake);
   const setStake = useSportsbookStore((state) => state.setStake);
   const totalOdds = useSportsbookStore(selectTotalOdds);
   const potentialWin = useSportsbookStore(selectPotentialWin);
   const hasOddsChanges = useSportsbookStore(selectHasOddsChanges);
-  const acceptAllChanges = useSportsbookStore((state) => state.acceptAllChanges);
+  const acceptAllChanges = useSportsbookStore(
+    (state) => state.acceptAllChanges,
+  );
+  const [betPlacedMessage, setBetPlacedMessage] = useState<string | null>(null);
 
   const selections = Object.values(selectionByEventId);
   const canPlaceBet =
-    !hasOddsChanges && selections.length > 0 && Number.isFinite(stake) && stake > 0;
+    !hasOddsChanges &&
+    selections.length > 0 &&
+    Number.isFinite(stake) &&
+    stake > 0;
 
   useEffect(() => {
     if (!lastReplacedEventId) {
@@ -177,9 +198,40 @@ function BetSlip() {
     };
   }, [lastReplacedEventId, clearLastReplacedEventId]);
 
+  useEffect(() => {
+    if (!betPlacedMessage) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setBetPlacedMessage(null);
+    }, 2800);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [betPlacedMessage]);
+
+  const handlePlaceBet = () => {
+    if (!canPlaceBet) {
+      return;
+    }
+
+    clearSelections();
+    setBetPlacedMessage("Bet placed successfully.");
+  };
+
   return (
     <aside className="w-full rounded-xl border border-zinc-200 bg-white p-4 shadow-sm lg:w-96">
       <h2 className="text-lg font-semibold text-zinc-900">Bet Slip</h2>
+      {betPlacedMessage ? (
+        <p
+          aria-live="polite"
+          className="pointer-events-none fixed top-4 right-4 z-50 rounded-md border border-emerald-300 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-800 shadow-sm lg:px-4.5 lg:py-3 lg:text-lg"
+        >
+          {betPlacedMessage}
+        </p>
+      ) : null}
 
       <div className="mt-3">
         <label
@@ -228,7 +280,9 @@ function BetSlip() {
                 }`}
               >
                 <div className="flex items-start justify-between gap-3">
-                  <p className="text-sm font-semibold text-zinc-900">{event.name}</p>
+                  <p className="text-sm font-semibold text-zinc-900">
+                    {event.name}
+                  </p>
                   <button
                     type="button"
                     aria-label={`Remove ${event.name} selection`}
@@ -248,7 +302,9 @@ function BetSlip() {
                 </p>
                 {isOddsChanged ? (
                   <p className="mt-2 inline-flex rounded bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-800">
-                    {isCurrentOddsAvailable ? "Odds changed" : "Odds unavailable"}
+                    {isCurrentOddsAvailable
+                      ? "Odds changed"
+                      : "Odds unavailable"}
                   </p>
                 ) : null}
               </li>
@@ -260,7 +316,9 @@ function BetSlip() {
       <div className="mt-4 rounded-lg border border-zinc-200 bg-zinc-50 p-3">
         <div className="flex items-center justify-between text-sm">
           <span className="text-zinc-600">Total Odds</span>
-          <span className="font-semibold text-zinc-900">{formatOdds(totalOdds)}</span>
+          <span className="font-semibold text-zinc-900">
+            {formatOdds(totalOdds)}
+          </span>
         </div>
         <div className="mt-2 flex items-center justify-between text-sm">
           <span className="text-zinc-600">Potential Win</span>
@@ -283,6 +341,7 @@ function BetSlip() {
         <button
           type="button"
           disabled={!canPlaceBet}
+          onClick={handlePlaceBet}
           className={`w-full rounded-md px-3 py-2 text-sm font-semibold transition-colors ${
             !canPlaceBet
               ? "cursor-not-allowed bg-zinc-300 text-zinc-600"
@@ -310,7 +369,9 @@ const EventRow = memo(function EventRow({ eventId }: { eventId: EventId }) {
     <li className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
       <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
         <h2 className="text-base font-semibold text-zinc-900">{event.name}</h2>
-        <p className="text-sm text-zinc-600">{formatEventStart(event.startAt)}</p>
+        <p className="text-sm text-zinc-600">
+          {formatEventStart(event.startAt)}
+        </p>
       </div>
 
       <p className="mt-1 text-xs text-zinc-500">
@@ -320,7 +381,11 @@ const EventRow = memo(function EventRow({ eventId }: { eventId: EventId }) {
       <div className="mt-3 flex flex-wrap gap-2">
         {oneXTwoOutcomeIds.length > 0 ? (
           oneXTwoOutcomeIds.map((outcomeId) => (
-            <OddsButton key={outcomeId} eventId={eventId} outcomeId={outcomeId} />
+            <OddsButton
+              key={outcomeId}
+              eventId={eventId}
+              outcomeId={outcomeId}
+            />
           ))
         ) : (
           <p className="text-sm text-zinc-500">No 1x2 market available</p>
@@ -330,16 +395,20 @@ const EventRow = memo(function EventRow({ eventId }: { eventId: EventId }) {
   );
 });
 
-export function SportsbookDashboard({ initialSnapshot }: SportsbookDashboardProps) {
+export function SportsbookDashboard({
+  initialSnapshot,
+}: SportsbookDashboardProps) {
   const initializeSnapshot = useSportsbookStore(
     (state) => state.initializeSnapshot,
   );
   const eventIds = useSportsbookStore((state) => state.eventIds);
   const eventsById = useSportsbookStore((state) => state.eventsById);
-  const applyOddsUpdates = useSportsbookStore((state) => state.applyOddsUpdates);
+  const applyOddsUpdates = useSportsbookStore(
+    (state) => state.applyOddsUpdates,
+  );
   const setOutcomeLock = useSportsbookStore((state) => state.setOutcomeLock);
-  const selectionCount = useSportsbookStore((state) =>
-    Object.keys(state.selectionByEventId).length,
+  const selectionCount = useSportsbookStore(
+    (state) => Object.keys(state.selectionByEventId).length,
   );
   const eventGroups = useMemo(() => {
     return groupEventIdsByLeagueCategory(eventIds, eventsById);
