@@ -9,6 +9,7 @@ import {
 } from "@/domain/odds";
 import type { DomainSnapshot, EventId, OutcomeId } from "@/domain/types";
 import {
+  selectHasOddsChanges,
   selectPotentialWin,
   selectTotalOdds,
   UI_MARKET_NAME,
@@ -142,6 +143,8 @@ function BetSlip() {
   const setStake = useSportsbookStore((state) => state.setStake);
   const totalOdds = useSportsbookStore(selectTotalOdds);
   const potentialWin = useSportsbookStore(selectPotentialWin);
+  const hasOddsChanges = useSportsbookStore(selectHasOddsChanges);
+  const acceptAllChanges = useSportsbookStore((state) => state.acceptAllChanges);
 
   const selections = Object.values(selectionByEventId);
 
@@ -190,7 +193,9 @@ function BetSlip() {
             const event = eventsById[selection.eventId];
             const outcome = outcomesById[selection.outcomeId];
             const currentOdds = oddsByOutcomeId[selection.outcomeId];
+            const selectedOddsSnapshot = selection.selectedOddsSnapshot;
             const isReplaced = selection.eventId === lastReplacedEventId;
+            const isOddsChanged = currentOdds !== selectedOddsSnapshot;
 
             if (!event || !outcome || typeof currentOdds !== "number") {
               return null;
@@ -218,8 +223,16 @@ function BetSlip() {
                 </div>
                 <p className="mt-1 text-sm text-zinc-600">{outcome.name}</p>
                 <p className="mt-1 text-sm font-medium text-zinc-800">
-                  Odds: {formatOdds(currentOdds)}
+                  Current: {formatOdds(currentOdds)}
                 </p>
+                <p className="mt-1 text-xs text-zinc-600">
+                  Snapshot: {formatOdds(selectedOddsSnapshot)}
+                </p>
+                {isOddsChanged ? (
+                  <p className="mt-2 inline-flex rounded bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-800">
+                    Odds changed
+                  </p>
+                ) : null}
               </li>
             );
           })}
@@ -237,6 +250,29 @@ function BetSlip() {
             {formatOdds(potentialWin)}
           </span>
         </div>
+      </div>
+
+      <div className="mt-3 flex flex-col gap-2">
+        {hasOddsChanges ? (
+          <button
+            type="button"
+            onClick={acceptAllChanges}
+            className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm font-semibold text-zinc-900 hover:border-zinc-400"
+          >
+            Accept all changes
+          </button>
+        ) : null}
+        <button
+          type="button"
+          disabled={hasOddsChanges || selections.length === 0}
+          className={`w-full rounded-md px-3 py-2 text-sm font-semibold transition-colors ${
+            hasOddsChanges || selections.length === 0
+              ? "cursor-not-allowed bg-zinc-300 text-zinc-600"
+              : "bg-zinc-900 text-white hover:bg-zinc-800"
+          }`}
+        >
+          Place Bet
+        </button>
       </div>
     </aside>
   );

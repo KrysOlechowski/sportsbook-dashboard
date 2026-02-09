@@ -61,12 +61,12 @@ This roadmap mirrors the recruitment task levels (1–4). Focus on correctness, 
 - [✅] Lock/suspend (must-have):
   - [✅] temporarily disable updated outcomes with a clear signal
   - [✅] clicks during lock do nothing
-- [ ] Bet Slip odds changed (must-have):
-  - [ ] store `selectedOddsSnapshot` at selection time
-  - [ ] show current odds + snapshot in Bet Slip items
-  - [ ] when odds changed: show badge “Odds changed”
-  - [ ] disable “Place Bet” until “Accept all changes”
-  - [ ] “Accept all changes” updates snapshots for all changed selections
+- [✅] Bet Slip odds changed (must-have):
+  - [✅] store `selectedOddsSnapshot` at selection time
+  - [✅] show current odds + snapshot in Bet Slip items
+  - [✅] when odds changed: show badge “Odds changed”
+  - [✅] disable “Place Bet” until “Accept all changes”
+  - [✅] “Accept all changes” updates snapshots for all changed selections
 
 ### Tests (Jest)
 
