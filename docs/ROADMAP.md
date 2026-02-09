@@ -11,7 +11,7 @@ This roadmap mirrors the recruitment task levels (1–4). Focus on correctness, 
 
 ## Level 0 — Testing bootstrap (Jest + RTL)
 
-- [ ] Add Jest configuration + jsdom environment
+- [✅] Add Jest configuration + jsdom environment
 - [ ] Add RTL setup (@testing-library/jest-dom)
 - [ ] Add npm run test + npm run test:watch
 - [ ] Verify a single dummy test passes (smoke)
