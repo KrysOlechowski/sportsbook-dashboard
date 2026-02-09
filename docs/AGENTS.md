@@ -67,6 +67,8 @@ After completing each task, always report in chat:
 3. Implement the smallest change that satisfies the requirement.
 4. Validate against docs/QA.md (especially Live + Performance).
 5. Update README.md only when external behaviour/setup changes.
+6. After completing each ROADMAP item, add or update at least 1 relevant test (domain/store first).
+7. When adding tests, only add new files under src/**/**tests**/** plus minimal test config files. Do not refactor or restructure the project unless strictly necessary.
 
 ## Code Quality Rules
 

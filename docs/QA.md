@@ -124,11 +124,97 @@ And “Place Bet” becomes enabled
 
 ---
 
-# Optional: Minimal unit tests (low effort, high signal)
 
-## 10) Domain odds helpers (odds.ts)
+# Automated tests (Jest + RTL + Cypress)
 
-- Test rounding to 2 decimals
-- Test clamp min 1.01
-- Test multiplier range produces expected bounds
-- Test that invalid inputs are handled safely (if implemented)
+## Conventions
+
+- Tests live only in: `src/**/__tests__/**`
+- Prefer **domain/store tests** first (stable, fast).
+- Add **RTL component tests** only when UI is stable.
+- Cypress: only a few “happy-path” flows (high signal, low cost).
+
+## A) Domain unit tests (Jest)
+
+**Location:** `src/domain/__tests__/`
+
+### 10) `odds.test.ts` (must-have)
+
+Covers helpers used by live ticker:
+- [ ] rounding to 2 decimals (include edge cases like 2.005 → 2.01)
+- [ ] clamp min 1.01
+- [ ] multiplier bounds respected (0.9..1.1) and final odds remain >= 1.01 after clamp
+- [ ] if randomness exists, inject or mock it in tests (deterministic)
+
+### 11) `calculations.test.ts` (recommended)
+
+- [ ] `totalOdds` = product of `selectedOddsSnapshot` values (not current odds)
+- [ ] `potentialWin` = `totalOdds * stake`
+- [ ] empty slip behaviour is consistent with UI (document the default)
+
+## B) Mapping / normalization tests (Jest)
+
+**Location:** `src/domain/__tests__/`
+
+### 12) `mapping.test.ts` (recommended, high signal)
+
+Given the provided `betting_dashboard_data.json`:
+- [ ] outputs a normalized snapshot: `eventIds`, `eventsById`, `marketsById`, `outcomesById`, `oddsByOutcomeId`
+- [ ] every `eventId` in `eventIds` exists in `eventsById`
+- [ ] every `outcomeId` referenced by markets exists in `outcomesById`
+- [ ] `oddsByOutcomeId[outcomeId]` exists and is numeric
+- [ ] mapping remains market-agnostic (no UI filtering here)
+
+## C) Store tests (Jest) — Bet Slip rules (must-have)
+
+**Location:** `src/store/__tests__/`
+
+### 13) `betslip.selection.test.ts` (must-have)
+
+- [ ] add selection: selecting an outcome adds `selectionByEventId[eventId]`
+- [ ] replace: selecting a different outcome for the same event replaces the previous one
+- [ ] toggle remove: selecting the same outcome twice removes it
+- [ ] `lastReplacedEventId` is set on replace (if implemented)
+
+### 14) `betslip.oddsChanged.test.ts` (must-have)
+
+- [ ] when `selectedOddsSnapshot != oddsByOutcomeId[outcomeId]` → `hasOddsChanges` is true
+- [ ] “Place Bet” state is disabled when `hasOddsChanges` is true (store-level flag)
+- [ ] `acceptAllChanges()` updates snapshots to current odds and clears `hasOddsChanges`
+
+### 15) `odds.updates.test.ts` (recommended)
+
+- [ ] applying odds updates changes only the targeted `outcomeId` odds
+- [ ] sets `pulseByOutcomeId[outcomeId]` to up/down based on old vs new odds
+- [ ] sets `lockedByOutcomeId[outcomeId]` temporarily during update (lock/suspend)
+
+## D) UI component tests (RTL) — minimal set
+
+**Location:** `src/ui/__tests__/` (or `src/ui/components/**/__tests__/` if you prefer; keep one convention)
+
+### 16) `OddsButton.test.tsx` (optional, after UI stabilizes)
+
+- [ ] clicking odds triggers selection (via store integration)
+- [ ] disabled state when locked/suspended
+- [ ] selected state is reflected (visual/aria)
+
+### 17) `BetSlip.test.tsx` (recommended)
+
+- [ ] shows selected item when selection exists
+- [ ] shows “Odds changed” badge when snapshot != current
+- [ ] “Accept all changes” clears the badge and enables “Place Bet”
+- [ ] replace highlight appears when a selection is replaced (if deterministic)
+
+## E) Cypress E2E (bonus, keep it tiny)
+
+**Location:** `cypress/e2e/`
+
+### 18) `betslip.e2e.cy.ts`
+
+- [ ] user selects 1/X/2 → item appears in Bet Slip
+- [ ] user changes selection in the same event → slip shows replaced selection
+
+### 19) `oddsChanged.e2e.cy.ts`
+
+- [ ] after an odds tick, slip shows “Odds changed”
+- [ ] user clicks “Accept all changes” → “Place Bet” becomes enabled

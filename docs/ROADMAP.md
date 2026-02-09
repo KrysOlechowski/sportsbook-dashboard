@@ -9,6 +9,13 @@ This roadmap mirrors the recruitment task levels (1–4). Focus on correctness, 
 - [✅] Define domain types (events, markets/games, outcomes)
 - [✅] Add Zustand store skeleton (market-agnostic domain, UI stays on 1x2)
 
+## Level 0 — Testing bootstrap (Jest + RTL)
+
+- [ ] Add Jest configuration + jsdom environment
+- [ ] Add RTL setup (@testing-library/jest-dom)
+- [ ] Add npm run test + npm run test:watch
+- [ ] Verify a single dummy test passes (smoke)
+
 ## Level 1 — Events list
 
 - [✅] Parse JSON into normalized maps (events/markets/outcomes)
@@ -21,6 +28,11 @@ This roadmap mirrors the recruitment task levels (1–4). Focus on correctness, 
 ## Level 2 — Bet Slip
 
 - [ ] Add selection on odds click
+
+### Tests (Jest)
+
+- [ ] Add `src/store/__tests__/betslip.selection.test.ts` (add/replace/toggle)
+
 - [ ] Enforce one selection per event (replace conflicts)
 - [ ] Replacement: brief highlight on Bet Slip item
 - [ ] Toggle remove by clicking selected outcome
@@ -30,6 +42,11 @@ This roadmap mirrors the recruitment task levels (1–4). Focus on correctness, 
 - [ ] Calculations:
   - [ ] Total Odds (product of snapshots)
   - [ ] Potential Win = Total Odds \* Stake
+
+### Tests (Jest)
+
+- [ ] Add `src/store/__tests__/betslip.oddsChanged.test.ts` (snapshot vs current + acceptAllChanges)
+- [ ] Add `src/domain/__tests__/calculations.test.ts` (totalOdds/potentialWin from snapshots)
 
 ## Level 3 — Live simulation + odds changed (must-have)
 
@@ -51,6 +68,11 @@ This roadmap mirrors the recruitment task levels (1–4). Focus on correctness, 
   - [ ] disable “Place Bet” until “Accept all changes”
   - [ ] “Accept all changes” updates snapshots for all changed selections
 
+### Tests (Jest)
+
+- [ ] Add `src/domain/__tests__/odds.test.ts` (rounding/clamp/multiplier)
+- [ ] Add `src/store/__tests__/odds.updates.test.ts` (pulse + lock + targeted updates)
+
 ## Level 4 — Performance / render optimization
 
 - [ ] Odds ticks do NOT cause full list re-render
@@ -61,9 +83,11 @@ This roadmap mirrors the recruitment task levels (1–4). Focus on correctness, 
 - [ ] Add proof:
   - [ ] console logs on OddsButton renders OR React Profiler notes/screenshot
 
-## Optional: Minimal unit tests (recommended)
+## Bonus — Cypress
 
-- [ ] Add a small test suite for `src/domain/odds.ts` (rounding, clamp, multiplier range)
+- [ ] Add 1–2 e2e flows once core is stable:
+  - [ ] `cypress/e2e/betslip.e2e.cy.ts` (select 1/X/2, replace selection)
+  - [ ] `cypress/e2e/oddsChanged.e2e.cy.ts` (odds changed badge + accept all changes)
 
 ## Final Polish
 
