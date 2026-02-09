@@ -38,6 +38,8 @@ const ONE_X_TWO_LABELS: Record<number, string> = {
 };
 
 const formatOdds = (value: number): string => value.toFixed(2);
+const formatStakeInputValue = (value: number): string =>
+  Number.isFinite(value) && value > 0 ? String(value) : "";
 
 const formatEventStart = (timestamp: number): string => {
   const date = new Date(timestamp);
@@ -176,6 +178,9 @@ function BetSlip() {
     (state) => state.acceptAllChanges,
   );
   const [betPlacedMessage, setBetPlacedMessage] = useState<string | null>(null);
+  const [stakeInputValue, setStakeInputValue] = useState<string>(() =>
+    formatStakeInputValue(stake),
+  );
 
   const selections = Object.values(selectionByEventId);
   const canPlaceBet =
@@ -212,6 +217,10 @@ function BetSlip() {
     };
   }, [betPlacedMessage]);
 
+  useEffect(() => {
+    setStakeInputValue(formatStakeInputValue(stake));
+  }, [stake]);
+
   const handlePlaceBet = () => {
     if (!canPlaceBet) {
       return;
@@ -221,13 +230,35 @@ function BetSlip() {
     setBetPlacedMessage("Bet placed successfully.");
   };
 
+  const handleStakeInputChange = (value: string) => {
+    const normalizedValue = value.replace(",", ".");
+    if (!/^\d*\.?\d*$/.test(normalizedValue)) {
+      return;
+    }
+
+    setStakeInputValue(normalizedValue);
+    if (normalizedValue === "") {
+      setStake(0);
+      return;
+    }
+
+    const parsedValue = Number(normalizedValue);
+    if (Number.isFinite(parsedValue)) {
+      setStake(parsedValue);
+    }
+  };
+
+  const handleStakeInputBlur = () => {
+    setStakeInputValue(formatStakeInputValue(stake));
+  };
+
   return (
     <aside className="w-full rounded-xl border border-zinc-200 bg-white p-4 shadow-sm lg:w-96">
       <h2 className="text-lg font-semibold text-zinc-900">Bet Slip</h2>
       {betPlacedMessage ? (
         <p
           aria-live="polite"
-          className="pointer-events-none fixed top-4 right-4 z-50 rounded-md border border-emerald-300 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-800 shadow-sm lg:px-4.5 lg:py-3 lg:text-lg"
+          className="pointer-events-none fixed top-4 right-4 z-50 rounded-md border border-emerald-300 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-800 shadow-sm lg:px-[18px] lg:py-3 lg:text-lg"
         >
           {betPlacedMessage}
         </p>
@@ -242,12 +273,13 @@ function BetSlip() {
         </label>
         <input
           id="stake-input"
-          type="number"
-          min={0}
-          step="0.01"
+          type="text"
+          autoComplete="off"
           inputMode="decimal"
-          value={Number.isFinite(stake) ? stake : 0}
-          onChange={(event) => setStake(Number(event.target.value))}
+          placeholder="0.00"
+          value={stakeInputValue}
+          onChange={(event) => handleStakeInputChange(event.target.value)}
+          onBlur={handleStakeInputBlur}
           className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900"
         />
       </div>
