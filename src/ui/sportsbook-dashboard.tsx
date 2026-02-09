@@ -68,7 +68,7 @@ function OddsButton({
   const selectedOutcomeId = useSportsbookStore(
     (state) => state.selectionByEventId[eventId]?.outcomeId ?? null,
   );
-  const selectOutcome = useSportsbookStore((state) => state.selectOutcome);
+  const toggleOutcome = useSportsbookStore((state) => state.toggleOutcome);
 
   if (!outcome || typeof odds !== "number") {
     return null;
@@ -80,7 +80,7 @@ function OddsButton({
   return (
     <button
       type="button"
-      onClick={() => selectOutcome(eventId, outcomeId)}
+      onClick={() => toggleOutcome(eventId, outcomeId)}
       aria-pressed={isSelected}
       title={outcome.name}
       className={`flex min-w-20 items-center justify-between rounded-md border px-3 py-2 text-sm font-medium transition-colors ${

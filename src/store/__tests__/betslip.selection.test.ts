@@ -86,7 +86,7 @@ describe("bet slip selection", () => {
 
   it("toggles selection off when clicking the same outcome again", () => {
     const store = useSportsbookStore.getState();
-    store.toggleOutcome("event-1", "outcome-3");
+    store.selectOutcome("event-1", "outcome-3");
     store.toggleOutcome("event-1", "outcome-3");
 
     const state = useSportsbookStore.getState();
