@@ -117,4 +117,21 @@ describe("odds updates", () => {
       "outcome-2",
     );
   });
+
+  it("does not mutate state when updates batch is empty", () => {
+    const store = useSportsbookStore.getState();
+    store.applyOddsUpdates([{ outcomeId: "outcome-1", odds: 2.2 }]);
+
+    const before = useSportsbookStore.getState();
+    const beforeOddsByOutcomeId = before.oddsByOutcomeId;
+    const beforePulseByOutcomeId = before.pulseByOutcomeId;
+    const beforeLockedByOutcomeId = before.lockedByOutcomeId;
+
+    store.applyOddsUpdates([]);
+
+    const after = useSportsbookStore.getState();
+    expect(after.oddsByOutcomeId).toBe(beforeOddsByOutcomeId);
+    expect(after.pulseByOutcomeId).toBe(beforePulseByOutcomeId);
+    expect(after.lockedByOutcomeId).toBe(beforeLockedByOutcomeId);
+  });
 });
