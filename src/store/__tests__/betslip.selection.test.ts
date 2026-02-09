@@ -143,4 +143,18 @@ describe("bet slip selection", () => {
     useSportsbookStore.getState().selectOutcome("event-1", "outcome-1");
     expect(useSportsbookStore.getState().selectionByEventId["event-1"]).toBeUndefined();
   });
+
+  it("clears all selections with clearSelections", () => {
+    const store = useSportsbookStore.getState();
+    store.selectOutcome("event-1", "outcome-1");
+    store.selectOutcome("event-1", "outcome-2");
+
+    expect(Object.keys(useSportsbookStore.getState().selectionByEventId)).toHaveLength(1);
+    expect(useSportsbookStore.getState().lastReplacedEventId).toBe("event-1");
+
+    store.clearSelections();
+
+    expect(Object.keys(useSportsbookStore.getState().selectionByEventId)).toHaveLength(0);
+    expect(useSportsbookStore.getState().lastReplacedEventId).toBeNull();
+  });
 });

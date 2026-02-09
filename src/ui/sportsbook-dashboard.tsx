@@ -19,6 +19,12 @@ import {
   type SportsbookStore,
   useSportsbookStore,
 } from "@/store/sportsbook.store";
+import {
+  formatStakeInputValue,
+  isStakeInputValueValid,
+  normalizeStakeInputValue,
+  parseStakeInputValue,
+} from "@/ui/stake-input";
 
 type SportsbookDashboardProps = {
   initialSnapshot: DomainSnapshot;
@@ -38,8 +44,6 @@ const ONE_X_TWO_LABELS: Record<number, string> = {
 };
 
 const formatOdds = (value: number): string => value.toFixed(2);
-const formatStakeInputValue = (value: number): string =>
-  Number.isFinite(value) && value > 0 ? String(value) : "";
 
 const formatEventStart = (timestamp: number): string => {
   const date = new Date(timestamp);
@@ -231,19 +235,14 @@ function BetSlip() {
   };
 
   const handleStakeInputChange = (value: string) => {
-    const normalizedValue = value.replace(",", ".");
-    if (!/^\d*\.?\d*$/.test(normalizedValue)) {
+    const normalizedValue = normalizeStakeInputValue(value);
+    if (!isStakeInputValueValid(normalizedValue)) {
       return;
     }
 
     setStakeInputValue(normalizedValue);
-    if (normalizedValue === "") {
-      setStake(0);
-      return;
-    }
-
-    const parsedValue = Number(normalizedValue);
-    if (Number.isFinite(parsedValue)) {
+    const parsedValue = parseStakeInputValue(normalizedValue);
+    if (parsedValue !== null) {
       setStake(parsedValue);
     }
   };
