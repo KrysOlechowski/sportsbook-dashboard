@@ -95,6 +95,73 @@ function OddsButton({
   );
 }
 
+function BetSlip() {
+  const selectionByEventId = useSportsbookStore((state) => state.selectionByEventId);
+  const eventsById = useSportsbookStore((state) => state.eventsById);
+  const outcomesById = useSportsbookStore((state) => state.outcomesById);
+  const oddsByOutcomeId = useSportsbookStore((state) => state.oddsByOutcomeId);
+  const lastReplacedEventId = useSportsbookStore((state) => state.lastReplacedEventId);
+  const clearLastReplacedEventId = useSportsbookStore(
+    (state) => state.clearLastReplacedEventId,
+  );
+
+  const selections = Object.values(selectionByEventId);
+
+  useEffect(() => {
+    if (!lastReplacedEventId) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      clearLastReplacedEventId();
+    }, 800);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [lastReplacedEventId, clearLastReplacedEventId]);
+
+  return (
+    <aside className="w-full rounded-xl border border-zinc-200 bg-white p-4 shadow-sm lg:w-96">
+      <h2 className="text-lg font-semibold text-zinc-900">Bet Slip</h2>
+
+      {selections.length === 0 ? (
+        <p className="mt-3 text-sm text-zinc-500">No selections yet.</p>
+      ) : (
+        <ul className="mt-3 flex flex-col gap-2">
+          {selections.map((selection) => {
+            const event = eventsById[selection.eventId];
+            const outcome = outcomesById[selection.outcomeId];
+            const currentOdds = oddsByOutcomeId[selection.outcomeId];
+            const isReplaced = selection.eventId === lastReplacedEventId;
+
+            if (!event || !outcome || typeof currentOdds !== "number") {
+              return null;
+            }
+
+            return (
+              <li
+                key={selection.eventId}
+                className={`rounded-lg border p-3 transition-colors duration-300 ${
+                  isReplaced
+                    ? "border-amber-400 bg-amber-100"
+                    : "border-zinc-200 bg-zinc-50"
+                }`}
+              >
+                <p className="text-sm font-semibold text-zinc-900">{event.name}</p>
+                <p className="mt-1 text-sm text-zinc-600">{outcome.name}</p>
+                <p className="mt-1 text-sm font-medium text-zinc-800">
+                  Odds: {formatOdds(currentOdds)}
+                </p>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </aside>
+  );
+}
+
 function EventRow({ eventId }: { eventId: EventId }) {
   const event = useSportsbookStore((state) => state.eventsById[eventId]);
   const oneXTwoOutcomeIds = useSportsbookStore(
@@ -141,7 +208,7 @@ export function SportsbookDashboard({ initialSnapshot }: SportsbookDashboardProp
 
   return (
     <main className="min-h-screen bg-zinc-100 p-4 md:p-8">
-      <section className="mx-auto flex w-full max-w-5xl flex-col gap-4">
+      <section className="mx-auto w-full max-w-6xl">
         <header>
           <h1 className="text-2xl font-semibold text-zinc-900">
             Live Sportsbook Dashboard
@@ -151,11 +218,14 @@ export function SportsbookDashboard({ initialSnapshot }: SportsbookDashboardProp
           </p>
         </header>
 
-        <ul className="flex flex-col gap-3">
-          {eventIds.map((eventId) => (
-            <EventRow key={eventId} eventId={eventId} />
-          ))}
-        </ul>
+        <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-start">
+          <ul className="flex flex-1 flex-col gap-3">
+            {eventIds.map((eventId) => (
+              <EventRow key={eventId} eventId={eventId} />
+            ))}
+          </ul>
+          <BetSlip />
+        </div>
       </section>
     </main>
   );

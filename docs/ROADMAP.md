@@ -34,7 +34,7 @@ This roadmap mirrors the recruitment task levels (1–4). Focus on correctness, 
 - [✅] Add `src/store/__tests__/betslip.selection.test.ts` (add/replace/toggle)
 
 - [✅] Enforce one selection per event (replace conflicts)
-- [ ] Replacement: brief highlight on Bet Slip item
+- [✅] Replacement: brief highlight on Bet Slip item
 - [ ] Toggle remove by clicking selected outcome
 - [ ] Remove selection via (X) in Bet Slip
 - [ ] Empty Bet Slip state (must-have)

@@ -36,6 +36,7 @@ export type SportsbookActions = {
   selectOutcome: (eventId: EventId, outcomeId: OutcomeId) => void;
   toggleOutcome: (eventId: EventId, outcomeId: OutcomeId) => void;
   removeSelection: (eventId: EventId) => void;
+  clearLastReplacedEventId: () => void;
   setStake: (value: number) => void;
   acceptAllChanges: () => void;
   setOutcomeLock: (outcomeId: OutcomeId, locked: boolean) => void;
@@ -115,6 +116,9 @@ export const useSportsbookStore = create<SportsbookStore>((set, get) => ({
       selectionByEventId: nextSelectionByEventId,
       lastReplacedEventId: null,
     });
+  },
+  clearLastReplacedEventId: () => {
+    set({ lastReplacedEventId: null });
   },
   setStake: (value) => {
     set({
