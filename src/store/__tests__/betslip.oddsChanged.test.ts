@@ -1,8 +1,6 @@
 import type { DomainSnapshot } from "@/domain/types";
-import {
-  selectHasOddsChanges,
-  useSportsbookStore,
-} from "@/store/sportsbook.store";
+import { useSportsbookStore } from "@/store/sportsbook.store";
+import { selectHasOddsChanges } from "@/store/sportsbook.selectors";
 
 const snapshot: DomainSnapshot = {
   eventIds: ["event-1", "event-2"],
