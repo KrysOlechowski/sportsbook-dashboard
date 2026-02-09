@@ -68,10 +68,26 @@ function OddsButton({
 }) {
   const outcome = useSportsbookStore((state) => state.outcomesById[outcomeId]);
   const odds = useSportsbookStore((state) => state.oddsByOutcomeId[outcomeId]);
+  const pulse = useSportsbookStore((state) => state.pulseByOutcomeId[outcomeId]);
   const selectedOutcomeId = useSportsbookStore(
     (state) => state.selectionByEventId[eventId]?.outcomeId ?? null,
   );
   const toggleOutcome = useSportsbookStore((state) => state.toggleOutcome);
+  const clearOutcomePulse = useSportsbookStore((state) => state.clearOutcomePulse);
+
+  useEffect(() => {
+    if (!pulse) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      clearOutcomePulse(outcomeId);
+    }, 700);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [pulse, outcomeId, clearOutcomePulse]);
 
   if (!outcome || typeof odds !== "number") {
     return null;
@@ -79,6 +95,8 @@ function OddsButton({
 
   const label = ONE_X_TWO_LABELS[outcome.position] ?? outcome.name;
   const isSelected = selectedOutcomeId === outcomeId;
+  const hasUpPulse = pulse === "up";
+  const hasDownPulse = pulse === "down";
 
   return (
     <button
@@ -86,10 +104,14 @@ function OddsButton({
       onClick={() => toggleOutcome(eventId, outcomeId)}
       aria-pressed={isSelected}
       title={outcome.name}
-      className={`flex min-w-20 items-center justify-between rounded-md border px-3 py-2 text-sm font-medium transition-colors ${
-        isSelected
-          ? "border-zinc-900 bg-zinc-900 text-white"
-          : "border-zinc-300 bg-white text-zinc-900 hover:border-zinc-400"
+      className={`flex min-w-20 items-center justify-between rounded-md border px-3 py-2 text-sm font-medium transition-colors duration-300 ${
+        hasUpPulse
+          ? "border-emerald-500 bg-emerald-100 text-emerald-900"
+          : hasDownPulse
+            ? "border-rose-500 bg-rose-100 text-rose-900"
+            : isSelected
+              ? "border-zinc-900 bg-zinc-900 text-white"
+              : "border-zinc-300 bg-white text-zinc-900 hover:border-zinc-400"
       }`}
     >
       <span>{label}</span>

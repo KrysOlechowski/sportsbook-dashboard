@@ -55,9 +55,9 @@ This roadmap mirrors the recruitment task levels (1–4). Focus on correctness, 
   - [✅] `newOdds = oldOdds * random(0.9..1.1)`
   - [✅] round to 2 decimals
   - [✅] clamp min 1.01
-- [ ] Blink:
-  - [ ] green on increase
-  - [ ] red on decrease
+- [✅] Blink:
+  - [✅] green on increase
+  - [✅] red on decrease
 - [ ] Lock/suspend (must-have):
   - [ ] temporarily disable updated outcomes with a clear signal
   - [ ] clicks during lock do nothing
