@@ -1,0 +1,617 @@
+[
+  {
+    "eventId": 876073,
+    "eventName": "Burnley - Manchester United",
+    "eventStart": 1767816900000,
+    "eventType": 1,
+    "category3Id": 34545,
+    "category2Id": 34544,
+    "category1Id": 1,
+    "category3Name": "Premier League",
+    "category2Name": "Anglia",
+    "category1Name": "Piłka nożna",
+    "gamesCount": 76,
+    "eventGames": [
+      {
+        "gameId": 92458923,
+        "gameName": "1x2",
+        "gameType": 1,
+        "outcomes": [
+          {
+            "outcomeId": 282071088,
+            "outcomeName": "Burnley",
+            "outcomeOdds": 4.5,
+            "outcomePosition": 0
+          },
+          {
+            "outcomeId": 282071089,
+            "outcomeName": "Remis",
+            "outcomeOdds": 3.55,
+            "outcomePosition": 1
+          },
+          {
+            "outcomeId": 282071090,
+            "outcomeName": "Manchester United",
+            "outcomeOdds": 1.62,
+            "outcomePosition": 2
+          }
+        ]
+      }
+    ],
+    "isCustomBetAvailable": false
+  },
+  {
+    "eventId": 876064,
+    "eventName": "Bournemouth - Tottenham Hotspur",
+    "eventStart": 1767814200000,
+    "eventType": 1,
+    "category3Id": 34545,
+    "category2Id": 34544,
+    "category1Id": 1,
+    "category3Name": "Premier League",
+    "category2Name": "Anglia",
+    "category1Name": "Piłka nożna",
+    "gamesCount": 57,
+    "eventGames": [
+      {
+        "gameId": 92458742,
+        "gameName": "1x2",
+        "gameType": 1,
+        "outcomes": [
+          {
+            "outcomeId": 282070514,
+            "outcomeName": "Bournemouth",
+            "outcomeOdds": 2.06,
+            "outcomePosition": 0
+          },
+          {
+            "outcomeId": 282070515,
+            "outcomeName": "Remis",
+            "outcomeOdds": 3.3,
+            "outcomePosition": 1
+          },
+          {
+            "outcomeId": 282070516,
+            "outcomeName": "Tottenham Hotspur",
+            "outcomeOdds": 3,
+            "outcomePosition": 2
+          }
+        ]
+      }
+    ],
+    "isCustomBetAvailable": false
+  },
+  {
+    "eventId": 876065,
+    "eventName": "Crystal Palace - Aston Villa",
+    "eventStart": 1767814200000,
+    "eventType": 1,
+    "category3Id": 34545,
+    "category2Id": 34544,
+    "category1Id": 1,
+    "category3Name": "Premier League",
+    "category2Name": "Anglia",
+    "category1Name": "Piłka nożna",
+    "gamesCount": 57,
+    "eventGames": [
+      {
+        "gameId": 92458747,
+        "gameName": "1x2",
+        "gameType": 1,
+        "outcomes": [
+          {
+            "outcomeId": 282070526,
+            "outcomeName": "Crystal Palace",
+            "outcomeOdds": 2.85,
+            "outcomePosition": 0
+          },
+          {
+            "outcomeId": 282070527,
+            "outcomeName": "Remis",
+            "outcomeOdds": 3.1,
+            "outcomePosition": 1
+          },
+          {
+            "outcomeId": 282070528,
+            "outcomeName": "Aston Villa",
+            "outcomeOdds": 2.24,
+            "outcomePosition": 2
+          }
+        ]
+      }
+    ],
+    "isCustomBetAvailable": true
+  },
+  {
+    "eventId": 876071,
+    "eventName": "Fulham - Chelsea",
+    "eventStart": 1767814200000,
+    "eventType": 1,
+    "category3Id": 34545,
+    "category2Id": 34544,
+    "category1Id": 1,
+    "category3Name": "Premier League",
+    "category2Name": "Anglia",
+    "category1Name": "Piłka nożna",
+    "gamesCount": 56,
+    "eventGames": [
+      {
+        "gameId": 92458846,
+        "gameName": "1x2",
+        "gameType": 1,
+        "outcomes": [
+          {
+            "outcomeId": 282070852,
+            "outcomeName": "Fulham",
+            "outcomeOdds": 3.25,
+            "outcomePosition": 0
+          },
+          {
+            "outcomeId": 282070853,
+            "outcomeName": "Remis",
+            "outcomeOdds": 3.35,
+            "outcomePosition": 1
+          },
+          {
+            "outcomeId": 282070854,
+            "outcomeName": "Chelsea",
+            "outcomeOdds": 1.94,
+            "outcomePosition": 2
+          }
+        ]
+      }
+    ],
+    "isCustomBetAvailable": false
+  },
+  {
+    "eventId": 878579,
+    "eventName": "Manchester United - Manchester City",
+    "eventStart": 1768653000000,
+    "eventType": 1,
+    "category3Id": 34545,
+    "category2Id": 34544,
+    "category1Id": 1,
+    "category3Name": "Premier League",
+    "category2Name": "Anglia",
+    "category1Name": "Piłka nożna",
+    "gamesCount": 22,
+    "eventGames": [
+      {
+        "gameId": 92711472,
+        "gameName": "1x2",
+        "gameType": 1,
+        "outcomes": [
+          {
+            "outcomeId": 282773947,
+            "outcomeName": "Manchester United",
+            "outcomeOdds": 3.6,
+            "outcomePosition": 0
+          },
+          {
+            "outcomeId": 282773948,
+            "outcomeName": "Remis",
+            "outcomeOdds": 3.75,
+            "outcomePosition": 1
+          },
+          {
+            "outcomeId": 282773949,
+            "outcomeName": "Manchester City",
+            "outcomeOdds": 1.73,
+            "outcomePosition": 2
+          }
+        ]
+      }
+    ],
+    "isCustomBetAvailable": true
+  },
+  {
+    "eventId": 878586,
+    "eventName": "Brighton - Bournemouth",
+    "eventStart": 1768852800000,
+    "eventType": 1,
+    "category3Id": 34545,
+    "category2Id": 34544,
+    "category1Id": 1,
+    "category3Name": "Premier League",
+    "category2Name": "Anglia",
+    "category1Name": "Piłka nożna",
+    "gamesCount": 21,
+    "eventGames": [
+      {
+        "gameId": 92711500,
+        "gameName": "1x2",
+        "gameType": 1,
+        "outcomes": [
+          {
+            "outcomeId": 282774022,
+            "outcomeName": "Brighton",
+            "outcomeOdds": 1.79,
+            "outcomePosition": 0
+          },
+          {
+            "outcomeId": 282774023,
+            "outcomeName": "Remis",
+            "outcomeOdds": 3.6,
+            "outcomePosition": 1
+          },
+          {
+            "outcomeId": 282774024,
+            "outcomeName": "Bournemouth",
+            "outcomeOdds": 3.5,
+            "outcomePosition": 2
+          }
+        ]
+      }
+    ],
+    "isCustomBetAvailable": false
+  },
+  {
+    "eventId": 860130,
+    "eventName": "FC Barcelona - Athletic Bilbao",
+    "eventStart": 1767812400000,
+    "eventType": 1,
+    "category3Id": 39624,
+    "category2Id": 35038,
+    "category1Id": 1,
+    "category3Name": "Superpuchar",
+    "category2Name": "Hiszpania",
+    "category1Name": "Piłka nożna",
+    "gamesCount": 25,
+    "eventGames": [
+      {
+        "gameId": 90318201,
+        "gameName": "1x2",
+        "gameType": 1,
+        "outcomes": [
+          {
+            "outcomeId": 276090804,
+            "outcomeName": "FC Barcelona",
+            "outcomeOdds": 1.44,
+            "outcomePosition": 0
+          },
+          {
+            "outcomeId": 276090805,
+            "outcomeName": "Remis",
+            "outcomeOdds": 4.3,
+            "outcomePosition": 1
+          },
+          {
+            "outcomeId": 276090806,
+            "outcomeName": "Athletic Bilbao",
+            "outcomeOdds": 5.2,
+            "outcomePosition": 2
+          }
+        ]
+      }
+    ],
+    "isCustomBetAvailable": false
+  },
+  {
+    "eventId": 876074,
+    "eventName": "Arsenal - Liverpool FC",
+    "eventStart": 1767902400000,
+    "eventType": 1,
+    "category3Id": 34545,
+    "category2Id": 34544,
+    "category1Id": 1,
+    "category3Name": "Premier League",
+    "category2Name": "Anglia",
+    "category1Name": "Piłka nożna",
+    "gamesCount": 76,
+    "eventGames": [
+      {
+        "gameId": 92458934,
+        "gameName": "1x2",
+        "gameType": 1,
+        "outcomes": [
+          {
+            "outcomeId": 282071113,
+            "outcomeName": "Arsenal",
+            "outcomeOdds": 1.52,
+            "outcomePosition": 0
+          },
+          {
+            "outcomeId": 282071114,
+            "outcomeName": "Remis",
+            "outcomeOdds": 3.85,
+            "outcomePosition": 1
+          },
+          {
+            "outcomeId": 282071115,
+            "outcomeName": "Liverpool FC",
+            "outcomeOdds": 5,
+            "outcomePosition": 2
+          }
+        ]
+      }
+    ],
+    "isCustomBetAvailable": false
+  },
+  {
+    "eventId": 865022,
+    "eventName": "Manchester United - Brighton",
+    "eventStart": 1768149000000,
+    "eventType": 1,
+    "category3Id": 39426,
+    "category2Id": 34544,
+    "category1Id": 1,
+    "category3Name": "FA Cup",
+    "category2Name": "Anglia",
+    "category1Name": "Piłka nożna",
+    "gamesCount": 21,
+    "eventGames": [
+      {
+        "gameId": 90841192,
+        "gameName": "1x2",
+        "gameType": 1,
+        "outcomes": [
+          {
+            "outcomeId": 277504502,
+            "outcomeName": "Manchester United",
+            "outcomeOdds": 1.78,
+            "outcomePosition": 0
+          },
+          {
+            "outcomeId": 277504503,
+            "outcomeName": "Remis",
+            "outcomeOdds": 3.6,
+            "outcomePosition": 1
+          },
+          {
+            "outcomeId": 277504504,
+            "outcomeName": "Brighton",
+            "outcomeOdds": 3.55,
+            "outcomePosition": 2
+          }
+        ]
+      }
+    ],
+    "isCustomBetAvailable": false
+  },
+  {
+    "eventId": 867740,
+    "eventName": "Ud Levante - Espanyol Barcelona",
+    "eventStart": 1768144500000,
+    "eventType": 1,
+    "category3Id": 35206,
+    "category2Id": 35038,
+    "category1Id": 1,
+    "category3Name": "LaLiga",
+    "category2Name": "Hiszpania",
+    "category1Name": "Piłka nożna",
+    "gamesCount": 25,
+    "eventGames": [
+      {
+        "gameId": 91410227,
+        "gameName": "1x2",
+        "gameType": 1,
+        "outcomes": [
+          {
+            "outcomeId": 279164727,
+            "outcomeName": "Ud Levante",
+            "outcomeOdds": 2.95,
+            "outcomePosition": 0
+          },
+          {
+            "outcomeId": 279164728,
+            "outcomeName": "Remis",
+            "outcomeOdds": 3.1,
+            "outcomePosition": 1
+          },
+          {
+            "outcomeId": 279164729,
+            "outcomeName": "Espanyol Barcelona",
+            "outcomeOdds": 2.2,
+            "outcomePosition": 2
+          }
+        ]
+      }
+    ],
+    "isCustomBetAvailable": false
+  },
+  {
+    "eventId": 878576,
+    "eventName": "Chelsea - Brentford FC",
+    "eventStart": 1768662000000,
+    "eventType": 1,
+    "category3Id": 34545,
+    "category2Id": 34544,
+    "category1Id": 1,
+    "category3Name": "Premier League",
+    "category2Name": "Anglia",
+    "category1Name": "Piłka nożna",
+    "gamesCount": 21,
+    "eventGames": [
+      {
+        "gameId": 92711463,
+        "gameName": "1x2",
+        "gameType": 1,
+        "outcomes": [
+          {
+            "outcomeId": 282773923,
+            "outcomeName": "Chelsea",
+            "outcomeOdds": 1.54,
+            "outcomePosition": 0
+          },
+          {
+            "outcomeId": 282773924,
+            "outcomeName": "Remis",
+            "outcomeOdds": 3.85,
+            "outcomePosition": 1
+          },
+          {
+            "outcomeId": 282773925,
+            "outcomeName": "Brentford FC",
+            "outcomeOdds": 4.8,
+            "outcomePosition": 2
+          }
+        ]
+      }
+    ],
+    "isCustomBetAvailable": false
+  },
+  {
+    "eventId": 878575,
+    "eventName": "Aston Villa - Everton",
+    "eventStart": 1768753800000,
+    "eventType": 1,
+    "category3Id": 34545,
+    "category2Id": 34544,
+    "category1Id": 1,
+    "category3Name": "Premier League",
+    "category2Name": "Anglia",
+    "category1Name": "Piłka nożna",
+    "gamesCount": 22,
+    "eventGames": [
+      {
+        "gameId": 92711460,
+        "gameName": "1x2",
+        "gameType": 1,
+        "outcomes": [
+          {
+            "outcomeId": 282773915,
+            "outcomeName": "Aston Villa",
+            "outcomeOdds": 1.69,
+            "outcomePosition": 0
+          },
+          {
+            "outcomeId": 282773916,
+            "outcomeName": "Remis",
+            "outcomeOdds": 3.4,
+            "outcomePosition": 1
+          },
+          {
+            "outcomeId": 282773917,
+            "outcomeName": "Everton",
+            "outcomeOdds": 4.2,
+            "outcomePosition": 2
+          }
+        ]
+      }
+    ],
+    "isCustomBetAvailable": true
+  },
+  {
+    "eventId": 878580,
+    "eventName": "FC Sunderland - Crystal Palace",
+    "eventStart": 1768662000000,
+    "eventType": 1,
+    "category3Id": 34545,
+    "category2Id": 34544,
+    "category1Id": 1,
+    "category3Name": "Premier League",
+    "category2Name": "Anglia",
+    "category1Name": "Piłka nożna",
+    "gamesCount": 22,
+    "eventGames": [
+      {
+        "gameId": 92711475,
+        "gameName": "1x2",
+        "gameType": 1,
+        "outcomes": [
+          {
+            "outcomeId": 282773955,
+            "outcomeName": "FC Sunderland",
+            "outcomeOdds": 2.65,
+            "outcomePosition": 0
+          },
+          {
+            "outcomeId": 282773956,
+            "outcomeName": "Remis",
+            "outcomeOdds": 3,
+            "outcomePosition": 1
+          },
+          {
+            "outcomeId": 282773957,
+            "outcomeName": "Crystal Palace",
+            "outcomeOdds": 2.47,
+            "outcomePosition": 2
+          }
+        ]
+      }
+    ],
+    "isCustomBetAvailable": false
+  },
+  {
+    "eventId": 876072,
+    "eventName": "Newcastle United - Leeds",
+    "eventStart": 1767816900000,
+    "eventType": 1,
+    "category3Id": 34545,
+    "category2Id": 34544,
+    "category1Id": 1,
+    "category3Name": "Premier League",
+    "category2Name": "Anglia",
+    "category1Name": "Piłka nożna",
+    "gamesCount": 59,
+    "eventGames": [
+      {
+        "gameId": 92458920,
+        "gameName": "1x2",
+        "gameType": 1,
+        "outcomes": [
+          {
+            "outcomeId": 282071080,
+            "outcomeName": "Newcastle United",
+            "outcomeOdds": 1.6,
+            "outcomePosition": 0
+          },
+          {
+            "outcomeId": 282071081,
+            "outcomeName": "Remis",
+            "outcomeOdds": 3.6,
+            "outcomePosition": 1
+          },
+          {
+            "outcomeId": 282071082,
+            "outcomeName": "Leeds",
+            "outcomeOdds": 4.6,
+            "outcomePosition": 2
+          }
+        ]
+      }
+    ],
+    "isCustomBetAvailable": false
+  },
+  {
+    "eventId": 878581,
+    "eventName": "Tottenham Hotspur - West Ham United",
+    "eventStart": 1768662000000,
+    "eventType": 1,
+    "category3Id": 34545,
+    "category2Id": 34544,
+    "category1Id": 1,
+    "category3Name": "Premier League",
+    "category2Name": "Anglia",
+    "category1Name": "Piłka nożna",
+    "gamesCount": 22,
+    "eventGames": [
+      {
+        "gameId": 92711478,
+        "gameName": "1x2",
+        "gameType": 1,
+        "outcomes": [
+          {
+            "outcomeId": 282773963,
+            "outcomeName": "Tottenham Hotspur",
+            "outcomeOdds": 1.63,
+            "outcomePosition": 0
+          },
+          {
+            "outcomeId": 282773964,
+            "outcomeName": "Remis",
+            "outcomeOdds": 3.65,
+            "outcomePosition": 1
+          },
+          {
+            "outcomeId": 282773965,
+            "outcomeName": "West Ham United",
+            "outcomeOdds": 4.3,
+            "outcomePosition": 2
+          }
+        ]
+      }
+    ],
+    "isCustomBetAvailable": false
+  }
+]
