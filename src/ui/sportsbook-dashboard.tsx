@@ -160,6 +160,8 @@ function BetSlip() {
   const acceptAllChanges = useSportsbookStore((state) => state.acceptAllChanges);
 
   const selections = Object.values(selectionByEventId);
+  const canPlaceBet =
+    !hasOddsChanges && selections.length > 0 && Number.isFinite(stake) && stake > 0;
 
   useEffect(() => {
     if (!lastReplacedEventId) {
@@ -280,9 +282,9 @@ function BetSlip() {
         ) : null}
         <button
           type="button"
-          disabled={hasOddsChanges || selections.length === 0}
+          disabled={!canPlaceBet}
           className={`w-full rounded-md px-3 py-2 text-sm font-semibold transition-colors ${
-            hasOddsChanges || selections.length === 0
+            !canPlaceBet
               ? "cursor-not-allowed bg-zinc-300 text-zinc-600"
               : "bg-zinc-900 text-white hover:bg-zinc-800"
           }`}
