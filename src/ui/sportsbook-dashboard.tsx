@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 import {
   buildRandomOddsUpdates,
   getRandomIntervalMs,
   getRandomLockDurationMs,
 } from "@/domain/odds";
+import { groupEventIdsByLeagueCategory } from "@/domain/grouping";
 import type { DomainSnapshot, EventId, OutcomeId } from "@/domain/types";
 import {
   selectHasOddsChanges,
@@ -317,8 +318,12 @@ export function SportsbookDashboard({ initialSnapshot }: SportsbookDashboardProp
     (state) => state.initializeSnapshot,
   );
   const eventIds = useSportsbookStore((state) => state.eventIds);
+  const eventsById = useSportsbookStore((state) => state.eventsById);
   const applyOddsUpdates = useSportsbookStore((state) => state.applyOddsUpdates);
   const setOutcomeLock = useSportsbookStore((state) => state.setOutcomeLock);
+  const eventGroups = useMemo(() => {
+    return groupEventIdsByLeagueCategory(eventIds, eventsById);
+  }, [eventIds, eventsById]);
 
   useEffect(() => {
     initializeSnapshot(initialSnapshot);
@@ -380,11 +385,20 @@ export function SportsbookDashboard({ initialSnapshot }: SportsbookDashboardProp
         </header>
 
         <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-start">
-          <ul className="flex flex-1 flex-col gap-3">
-            {eventIds.map((eventId) => (
-              <EventRow key={eventId} eventId={eventId} />
+          <div className="flex flex-1 flex-col gap-5">
+            {eventGroups.map((group) => (
+              <section key={group.id}>
+                <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-zinc-600">
+                  {group.sportName} • {group.countryName} • {group.leagueName}
+                </h2>
+                <ul className="flex flex-col gap-3">
+                  {group.eventIds.map((eventId) => (
+                    <EventRow key={eventId} eventId={eventId} />
+                  ))}
+                </ul>
+              </section>
             ))}
-          </ul>
+          </div>
           <BetSlip />
         </div>
       </section>

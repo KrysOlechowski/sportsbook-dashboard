@@ -23,7 +23,7 @@ This roadmap mirrors the recruitment task levels (1–4). Focus on correctness, 
   - [✅] eventName
   - [✅] formatted eventStart
   - [✅] odds buttons for `gameName === "1x2"`: 1 / X / 2 (with tooltips)
-- [ ] Optional: group by league/category (After level 2 and 3)
+- [✅] Optional: group by league/category (After level 2 and 3)
 
 ## Level 2 — Bet Slip
 
