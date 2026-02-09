@@ -125,14 +125,13 @@ And “Place Bet” becomes enabled
 ---
 
 
-# Automated tests (Jest + RTL + Cypress)
+# Automated tests (Jest + RTL)
 
 ## Conventions
 
 - Tests live only in: `src/**/__tests__/**`
 - Prefer **domain/store tests** first (stable, fast).
 - Add **RTL component tests** only when UI is stable.
-- Cypress: only a few “happy-path” flows (high signal, low cost).
 
 ## A) Domain unit tests (Jest)
 
@@ -204,17 +203,3 @@ Given the provided `betting_dashboard_data.json`:
 - [ ] shows “Odds changed” badge when snapshot != current
 - [ ] “Accept all changes” clears the badge and enables “Place Bet”
 - [ ] replace highlight appears when a selection is replaced (if deterministic)
-
-## E) Cypress E2E (bonus, keep it tiny)
-
-**Location:** `cypress/e2e/`
-
-### 18) `betslip.e2e.cy.ts`
-
-- [ ] user selects 1/X/2 → item appears in Bet Slip
-- [ ] user changes selection in the same event → slip shows replaced selection
-
-### 19) `oddsChanged.e2e.cy.ts`
-
-- [ ] after an odds tick, slip shows “Odds changed”
-- [ ] user clicks “Accept all changes” → “Place Bet” becomes enabled

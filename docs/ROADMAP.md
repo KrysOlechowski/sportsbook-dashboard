@@ -83,12 +83,6 @@ This roadmap mirrors the recruitment task levels (1–4). Focus on correctness, 
 - [✅] Add proof:
   - [✅] console logs on OddsButton renders OR React Profiler notes/screenshot
 
-## Bonus — Cypress
-
-- [ ] Add 1–2 e2e flows once core is stable:
-  - [ ] `cypress/e2e/betslip.e2e.cy.ts` (select 1/X/2, replace selection)
-  - [ ] `cypress/e2e/oddsChanged.e2e.cy.ts` (odds changed badge + accept all changes)
-
 ## Final Polish
 
 - [✅] Responsive layout (desktop + mobile)
