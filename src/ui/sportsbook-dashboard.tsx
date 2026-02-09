@@ -56,21 +56,38 @@ const selectOneXTwoOutcomeIdsByEventId =
     return state.marketsById[marketId]?.outcomeIds ?? EMPTY_OUTCOME_IDS;
   };
 
-function OddsButton({ outcomeId }: { outcomeId: OutcomeId }) {
+function OddsButton({
+  eventId,
+  outcomeId,
+}: {
+  eventId: EventId;
+  outcomeId: OutcomeId;
+}) {
   const outcome = useSportsbookStore((state) => state.outcomesById[outcomeId]);
   const odds = useSportsbookStore((state) => state.oddsByOutcomeId[outcomeId]);
+  const selectedOutcomeId = useSportsbookStore(
+    (state) => state.selectionByEventId[eventId]?.outcomeId ?? null,
+  );
+  const selectOutcome = useSportsbookStore((state) => state.selectOutcome);
 
   if (!outcome || typeof odds !== "number") {
     return null;
   }
 
   const label = ONE_X_TWO_LABELS[outcome.position] ?? outcome.name;
+  const isSelected = selectedOutcomeId === outcomeId;
 
   return (
     <button
       type="button"
+      onClick={() => selectOutcome(eventId, outcomeId)}
+      aria-pressed={isSelected}
       title={outcome.name}
-      className="flex min-w-20 items-center justify-between rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm font-medium text-zinc-900"
+      className={`flex min-w-20 items-center justify-between rounded-md border px-3 py-2 text-sm font-medium transition-colors ${
+        isSelected
+          ? "border-zinc-900 bg-zinc-900 text-white"
+          : "border-zinc-300 bg-white text-zinc-900 hover:border-zinc-400"
+      }`}
     >
       <span>{label}</span>
       <span>{formatOdds(odds)}</span>
@@ -102,7 +119,7 @@ function EventRow({ eventId }: { eventId: EventId }) {
       <div className="mt-3 flex flex-wrap gap-2">
         {oneXTwoOutcomeIds.length > 0 ? (
           oneXTwoOutcomeIds.map((outcomeId) => (
-            <OddsButton key={outcomeId} outcomeId={outcomeId} />
+            <OddsButton key={outcomeId} eventId={eventId} outcomeId={outcomeId} />
           ))
         ) : (
           <p className="text-sm text-zinc-500">No 1x2 market available</p>
