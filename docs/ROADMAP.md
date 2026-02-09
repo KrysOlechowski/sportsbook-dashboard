@@ -36,7 +36,7 @@ This roadmap mirrors the recruitment task levels (1–4). Focus on correctness, 
 - [✅] Enforce one selection per event (replace conflicts)
 - [✅] Replacement: brief highlight on Bet Slip item
 - [✅] Toggle remove by clicking selected outcome
-- [ ] Remove selection via (X) in Bet Slip
+- [✅] Remove selection via (X) in Bet Slip
 - [ ] Empty Bet Slip state (must-have)
 - [ ] Stake input with validation (>= 0)
 - [ ] Calculations:

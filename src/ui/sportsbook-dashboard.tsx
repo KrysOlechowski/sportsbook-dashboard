@@ -104,6 +104,7 @@ function BetSlip() {
   const clearLastReplacedEventId = useSportsbookStore(
     (state) => state.clearLastReplacedEventId,
   );
+  const removeSelection = useSportsbookStore((state) => state.removeSelection);
 
   const selections = Object.values(selectionByEventId);
 
@@ -148,7 +149,17 @@ function BetSlip() {
                     : "border-zinc-200 bg-zinc-50"
                 }`}
               >
-                <p className="text-sm font-semibold text-zinc-900">{event.name}</p>
+                <div className="flex items-start justify-between gap-3">
+                  <p className="text-sm font-semibold text-zinc-900">{event.name}</p>
+                  <button
+                    type="button"
+                    aria-label={`Remove ${event.name} selection`}
+                    onClick={() => removeSelection(selection.eventId)}
+                    className="inline-flex h-6 w-6 items-center justify-center rounded border border-zinc-300 bg-white text-xs font-semibold text-zinc-700 hover:border-zinc-400"
+                  >
+                    X
+                  </button>
+                </div>
                 <p className="mt-1 text-sm text-zinc-600">{outcome.name}</p>
                 <p className="mt-1 text-sm font-medium text-zinc-800">
                   Odds: {formatOdds(currentOdds)}

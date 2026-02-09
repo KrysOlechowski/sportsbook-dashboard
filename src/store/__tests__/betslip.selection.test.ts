@@ -102,4 +102,13 @@ describe("bet slip selection", () => {
     store.clearLastReplacedEventId();
     expect(useSportsbookStore.getState().lastReplacedEventId).toBeNull();
   });
+
+  it("removes selection via removeSelection action", () => {
+    const store = useSportsbookStore.getState();
+    store.selectOutcome("event-1", "outcome-1");
+    expect(useSportsbookStore.getState().selectionByEventId["event-1"]).toBeDefined();
+
+    store.removeSelection("event-1");
+    expect(useSportsbookStore.getState().selectionByEventId["event-1"]).toBeUndefined();
+  });
 });
