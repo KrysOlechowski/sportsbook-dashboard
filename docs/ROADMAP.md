@@ -13,8 +13,8 @@ This roadmap mirrors the recruitment task levels (1–4). Focus on correctness, 
 
 - [✅] Add Jest configuration + jsdom environment
 - [✅] Add RTL setup (@testing-library/jest-dom)
-- [ ] Add npm run test + npm run test:watch
-- [ ] Verify a single dummy test passes (smoke)
+- [✅] Add npm run test + npm run test:watch
+- [✅] Verify a single dummy test passes (smoke)
 
 ## Level 1 — Events list
 
