@@ -4,6 +4,8 @@ import { useEffect } from "react";
 
 import type { DomainSnapshot, EventId, OutcomeId } from "@/domain/types";
 import {
+  selectPotentialWin,
+  selectTotalOdds,
   UI_MARKET_NAME,
   type SportsbookStore,
   useSportsbookStore,
@@ -105,6 +107,10 @@ function BetSlip() {
     (state) => state.clearLastReplacedEventId,
   );
   const removeSelection = useSportsbookStore((state) => state.removeSelection);
+  const stake = useSportsbookStore((state) => state.stake);
+  const setStake = useSportsbookStore((state) => state.setStake);
+  const totalOdds = useSportsbookStore(selectTotalOdds);
+  const potentialWin = useSportsbookStore(selectPotentialWin);
 
   const selections = Object.values(selectionByEventId);
 
@@ -125,6 +131,25 @@ function BetSlip() {
   return (
     <aside className="w-full rounded-xl border border-zinc-200 bg-white p-4 shadow-sm lg:w-96">
       <h2 className="text-lg font-semibold text-zinc-900">Bet Slip</h2>
+
+      <div className="mt-3">
+        <label
+          htmlFor="stake-input"
+          className="mb-1 block text-xs font-semibold uppercase tracking-wide text-zinc-500"
+        >
+          Stake
+        </label>
+        <input
+          id="stake-input"
+          type="number"
+          min={0}
+          step="0.01"
+          inputMode="decimal"
+          value={Number.isFinite(stake) ? stake : 0}
+          onChange={(event) => setStake(Number(event.target.value))}
+          className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900"
+        />
+      </div>
 
       {selections.length === 0 ? (
         <p className="mt-3 text-sm text-zinc-500">No selections yet.</p>
@@ -169,6 +194,19 @@ function BetSlip() {
           })}
         </ul>
       )}
+
+      <div className="mt-4 rounded-lg border border-zinc-200 bg-zinc-50 p-3">
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-zinc-600">Total Odds</span>
+          <span className="font-semibold text-zinc-900">{formatOdds(totalOdds)}</span>
+        </div>
+        <div className="mt-2 flex items-center justify-between text-sm">
+          <span className="text-zinc-600">Potential Win</span>
+          <span className="font-semibold text-zinc-900">
+            {formatOdds(potentialWin)}
+          </span>
+        </div>
+      </div>
     </aside>
   );
 }

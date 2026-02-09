@@ -1,5 +1,9 @@
 import { create } from "zustand";
 
+import {
+  calculatePotentialWin,
+  calculateTotalOdds,
+} from "@/domain/calculations";
 import type {
   DomainSnapshot,
   EventId,
@@ -211,9 +215,7 @@ export const selectHasOddsChanges = (state: SportsbookStore): boolean =>
   });
 
 export const selectTotalOdds = (state: SportsbookStore): number =>
-  Object.values(state.selectionByEventId).reduce((product, selection) => {
-    return product * selection.selectedOddsSnapshot;
-  }, 1);
+  calculateTotalOdds(Object.values(state.selectionByEventId));
 
 export const selectPotentialWin = (state: SportsbookStore): number =>
-  selectTotalOdds(state) * state.stake;
+  calculatePotentialWin(Object.values(state.selectionByEventId), state.stake);

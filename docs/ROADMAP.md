@@ -37,16 +37,16 @@ This roadmap mirrors the recruitment task levels (1–4). Focus on correctness, 
 - [✅] Replacement: brief highlight on Bet Slip item
 - [✅] Toggle remove by clicking selected outcome
 - [✅] Remove selection via (X) in Bet Slip
-- [ ] Empty Bet Slip state (must-have)
-- [ ] Stake input with validation (>= 0)
+- [✅] Empty Bet Slip state (must-have)
+- [✅] Stake input with validation (>= 0)
 - [ ] Calculations:
-  - [ ] Total Odds (product of snapshots)
-  - [ ] Potential Win = Total Odds \* Stake
+  - [✅] Total Odds (product of snapshots)
+  - [✅] Potential Win = Total Odds \* Stake
 
 ### Tests (Jest)
 
 - [ ] Add `src/store/__tests__/betslip.oddsChanged.test.ts` (snapshot vs current + acceptAllChanges)
-- [ ] Add `src/domain/__tests__/calculations.test.ts` (totalOdds/potentialWin from snapshots)
+- [✅] Add `src/domain/__tests__/calculations.test.ts` (totalOdds/potentialWin from snapshots)
 
 ## Level 3 — Live simulation + odds changed (must-have)
 

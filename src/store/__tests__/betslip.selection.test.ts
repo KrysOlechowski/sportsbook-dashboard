@@ -64,6 +64,13 @@ describe("bet slip selection", () => {
     useSportsbookStore.getState().initializeSnapshot(snapshot);
   });
 
+  it("starts with empty bet slip state", () => {
+    const state = useSportsbookStore.getState();
+
+    expect(Object.keys(state.selectionByEventId)).toHaveLength(0);
+    expect(state.lastReplacedEventId).toBeNull();
+  });
+
   it("adds selection for an event", () => {
     useSportsbookStore.getState().selectOutcome("event-1", "outcome-1");
     const state = useSportsbookStore.getState();
@@ -110,5 +117,18 @@ describe("bet slip selection", () => {
 
     store.removeSelection("event-1");
     expect(useSportsbookStore.getState().selectionByEventId["event-1"]).toBeUndefined();
+  });
+
+  it("validates stake as non-negative number", () => {
+    const store = useSportsbookStore.getState();
+
+    store.setStake(12.5);
+    expect(useSportsbookStore.getState().stake).toBe(12.5);
+
+    store.setStake(-3);
+    expect(useSportsbookStore.getState().stake).toBe(0);
+
+    store.setStake(Number.NaN);
+    expect(useSportsbookStore.getState().stake).toBe(0);
   });
 });
