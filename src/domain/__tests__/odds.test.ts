@@ -3,8 +3,11 @@ import {
   clampMinOdds,
   computeNextOdds,
   getRandomIntervalMs,
+  getRandomLockDurationMs,
   getRandomMultiplier,
+  MAX_LOCK_DURATION_MS,
   MAX_LIVE_TICK_INTERVAL_MS,
+  MIN_LOCK_DURATION_MS,
   MIN_LIVE_MULTIPLIER,
   MIN_LIVE_TICK_INTERVAL_MS,
   MIN_ODDS,
@@ -15,6 +18,11 @@ describe("domain odds helpers", () => {
   it("returns random interval within 10-15 seconds", () => {
     expect(getRandomIntervalMs(() => 0)).toBe(MIN_LIVE_TICK_INTERVAL_MS);
     expect(getRandomIntervalMs(() => 0.999999)).toBe(MAX_LIVE_TICK_INTERVAL_MS);
+  });
+
+  it("returns lock duration within 300-800 ms", () => {
+    expect(getRandomLockDurationMs(() => 0)).toBe(MIN_LOCK_DURATION_MS);
+    expect(getRandomLockDurationMs(() => 0.999999)).toBe(MAX_LOCK_DURATION_MS);
   });
 
   it("rounds odds to 2 decimals", () => {

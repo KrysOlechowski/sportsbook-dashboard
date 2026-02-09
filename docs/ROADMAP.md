@@ -58,9 +58,9 @@ This roadmap mirrors the recruitment task levels (1–4). Focus on correctness, 
 - [✅] Blink:
   - [✅] green on increase
   - [✅] red on decrease
-- [ ] Lock/suspend (must-have):
-  - [ ] temporarily disable updated outcomes with a clear signal
-  - [ ] clicks during lock do nothing
+- [✅] Lock/suspend (must-have):
+  - [✅] temporarily disable updated outcomes with a clear signal
+  - [✅] clicks during lock do nothing
 - [ ] Bet Slip odds changed (must-have):
   - [ ] store `selectedOddsSnapshot` at selection time
   - [ ] show current odds + snapshot in Bet Slip items
@@ -71,7 +71,7 @@ This roadmap mirrors the recruitment task levels (1–4). Focus on correctness, 
 ### Tests (Jest)
 
 - [✅] Add `src/domain/__tests__/odds.test.ts` (rounding/clamp/multiplier)
-- [ ] Add `src/store/__tests__/odds.updates.test.ts` (pulse + lock + targeted updates)
+- [✅] Add `src/store/__tests__/odds.updates.test.ts` (pulse + lock + targeted updates)
 
 ## Level 4 — Performance / render optimization
 

@@ -91,4 +91,30 @@ describe("odds updates", () => {
     store.clearOutcomePulse("outcome-1");
     expect(useSportsbookStore.getState().pulseByOutcomeId["outcome-1"]).toBeNull();
   });
+
+  it("locks outcome and unlocks it after odds update is applied", () => {
+    const store = useSportsbookStore.getState();
+
+    store.setOutcomeLock("outcome-1", true);
+    expect(useSportsbookStore.getState().lockedByOutcomeId["outcome-1"]).toBe(true);
+
+    store.applyOddsUpdates([{ outcomeId: "outcome-1", odds: 2.3 }]);
+    expect(useSportsbookStore.getState().lockedByOutcomeId["outcome-1"]).toBe(false);
+  });
+
+  it("does nothing on toggle when outcome is locked", () => {
+    const store = useSportsbookStore.getState();
+
+    store.selectOutcome("event-1", "outcome-2");
+    expect(useSportsbookStore.getState().selectionByEventId["event-1"]?.outcomeId).toBe(
+      "outcome-2",
+    );
+
+    store.setOutcomeLock("outcome-2", true);
+    store.toggleOutcome("event-1", "outcome-2");
+
+    expect(useSportsbookStore.getState().selectionByEventId["event-1"]?.outcomeId).toBe(
+      "outcome-2",
+    );
+  });
 });

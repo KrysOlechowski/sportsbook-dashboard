@@ -2,7 +2,11 @@
 
 import { useEffect } from "react";
 
-import { buildRandomOddsUpdates, getRandomIntervalMs } from "@/domain/odds";
+import {
+  buildRandomOddsUpdates,
+  getRandomIntervalMs,
+  getRandomLockDurationMs,
+} from "@/domain/odds";
 import type { DomainSnapshot, EventId, OutcomeId } from "@/domain/types";
 import {
   selectPotentialWin,
@@ -69,6 +73,7 @@ function OddsButton({
   const outcome = useSportsbookStore((state) => state.outcomesById[outcomeId]);
   const odds = useSportsbookStore((state) => state.oddsByOutcomeId[outcomeId]);
   const pulse = useSportsbookStore((state) => state.pulseByOutcomeId[outcomeId]);
+  const locked = useSportsbookStore((state) => state.lockedByOutcomeId[outcomeId]);
   const selectedOutcomeId = useSportsbookStore(
     (state) => state.selectionByEventId[eventId]?.outcomeId ?? null,
   );
@@ -101,11 +106,14 @@ function OddsButton({
   return (
     <button
       type="button"
+      disabled={Boolean(locked)}
       onClick={() => toggleOutcome(eventId, outcomeId)}
       aria-pressed={isSelected}
-      title={outcome.name}
+      title={locked ? "Updating odds..." : outcome.name}
       className={`flex min-w-20 items-center justify-between rounded-md border px-3 py-2 text-sm font-medium transition-colors duration-300 ${
-        hasUpPulse
+        locked
+          ? "cursor-not-allowed border-zinc-300 bg-zinc-100 text-zinc-500"
+          : hasUpPulse
           ? "border-emerald-500 bg-emerald-100 text-emerald-900"
           : hasDownPulse
             ? "border-rose-500 bg-rose-100 text-rose-900"
@@ -115,7 +123,7 @@ function OddsButton({
       }`}
     >
       <span>{label}</span>
-      <span>{formatOdds(odds)}</span>
+      <span>{locked ? "..." : formatOdds(odds)}</span>
     </button>
   );
 }
@@ -274,39 +282,54 @@ export function SportsbookDashboard({ initialSnapshot }: SportsbookDashboardProp
   );
   const eventIds = useSportsbookStore((state) => state.eventIds);
   const applyOddsUpdates = useSportsbookStore((state) => state.applyOddsUpdates);
+  const setOutcomeLock = useSportsbookStore((state) => state.setOutcomeLock);
 
   useEffect(() => {
     initializeSnapshot(initialSnapshot);
   }, [initialSnapshot, initializeSnapshot]);
 
   useEffect(() => {
-    let timeoutId: number | null = null;
+    const activeTimeoutIds: number[] = [];
     let isActive = true;
 
     const scheduleNextTick = () => {
       const intervalMs = getRandomIntervalMs();
 
-      timeoutId = window.setTimeout(() => {
+      const tickTimeoutId = window.setTimeout(() => {
         if (!isActive) {
           return;
         }
 
         const { oddsByOutcomeId } = useSportsbookStore.getState();
         const updates = buildRandomOddsUpdates(oddsByOutcomeId);
-        applyOddsUpdates(updates);
+        const lockDurationMs = getRandomLockDurationMs();
+
+        for (const update of updates) {
+          setOutcomeLock(update.outcomeId, true);
+        }
+
+        const applyTimeoutId = window.setTimeout(() => {
+          if (!isActive) {
+            return;
+          }
+          applyOddsUpdates(updates);
+        }, lockDurationMs);
+        activeTimeoutIds.push(applyTimeoutId);
+
         scheduleNextTick();
       }, intervalMs);
+      activeTimeoutIds.push(tickTimeoutId);
     };
 
     scheduleNextTick();
 
     return () => {
       isActive = false;
-      if (timeoutId !== null) {
+      for (const timeoutId of activeTimeoutIds) {
         window.clearTimeout(timeoutId);
       }
     };
-  }, [applyOddsUpdates]);
+  }, [applyOddsUpdates, setOutcomeLock]);
 
   return (
     <main className="min-h-screen bg-zinc-100 p-4 md:p-8">

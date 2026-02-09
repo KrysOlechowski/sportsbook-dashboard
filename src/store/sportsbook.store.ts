@@ -76,7 +76,11 @@ export const useSportsbookStore = create<SportsbookStore>((set, get) => ({
     });
   },
   selectOutcome: (eventId, outcomeId) => {
-    const { selectionByEventId, oddsByOutcomeId } = get();
+    const { selectionByEventId, oddsByOutcomeId, lockedByOutcomeId } = get();
+    if (lockedByOutcomeId[outcomeId]) {
+      return;
+    }
+
     const nextSelection: BetSelection = {
       eventId,
       outcomeId,
@@ -93,7 +97,11 @@ export const useSportsbookStore = create<SportsbookStore>((set, get) => ({
     });
   },
   toggleOutcome: (eventId, outcomeId) => {
-    const { selectionByEventId } = get();
+    const { selectionByEventId, lockedByOutcomeId } = get();
+    if (lockedByOutcomeId[outcomeId]) {
+      return;
+    }
+
     const current = selectionByEventId[eventId];
 
     if (current?.outcomeId === outcomeId) {

@@ -5,6 +5,8 @@ export const MAX_LIVE_TICK_INTERVAL_MS = 15_000;
 export const MIN_LIVE_MULTIPLIER = 0.9;
 export const MAX_LIVE_MULTIPLIER = 1.1;
 export const MIN_ODDS = 1.01;
+export const MIN_LOCK_DURATION_MS = 300;
+export const MAX_LOCK_DURATION_MS = 800;
 
 type RandomFn = () => number;
 
@@ -23,6 +25,13 @@ export const getRandomIntervalMs = (random: RandomFn = Math.random): number => {
 export const getRandomMultiplier = (random: RandomFn = Math.random): number => {
   const range = MAX_LIVE_MULTIPLIER - MIN_LIVE_MULTIPLIER;
   return MIN_LIVE_MULTIPLIER + random() * range;
+};
+
+export const getRandomLockDurationMs = (
+  random: RandomFn = Math.random,
+): number => {
+  const range = MAX_LOCK_DURATION_MS - MIN_LOCK_DURATION_MS + 1;
+  return MIN_LOCK_DURATION_MS + Math.floor(random() * range);
 };
 
 export const roundOdds = (value: number): number => {
