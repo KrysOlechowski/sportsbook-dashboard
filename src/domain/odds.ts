@@ -51,6 +51,10 @@ export const computeNextOdds = (
   return clampMinOdds(rounded);
 };
 
+export const isValidOdds = (value: unknown): value is number => {
+  return typeof value === "number" && Number.isFinite(value) && value >= MIN_ODDS;
+};
+
 export const buildRandomOddsUpdates = (
   oddsByOutcomeId: OddsUpdateInput,
   random: RandomFn = Math.random,

@@ -141,4 +141,26 @@ describe("bet slip odds changed handling", () => {
     expect(state.selectionByEventId["event-2"]?.selectedOddsSnapshot).toBe(2.2);
     expect(selectHasOddsChanges(state)).toBe(false);
   });
+
+  it("keeps previous snapshot when current odds become invalid", () => {
+    const store = useSportsbookStore.getState();
+    store.selectOutcome("event-1", "outcome-1");
+    const initialSnapshot = useSportsbookStore.getState().selectionByEventId["event-1"]
+      ?.selectedOddsSnapshot;
+
+    useSportsbookStore.setState((state) => ({
+      oddsByOutcomeId: {
+        ...state.oddsByOutcomeId,
+        "outcome-1": Number.NaN,
+      },
+    }));
+
+    expect(selectHasOddsChanges(useSportsbookStore.getState())).toBe(true);
+    store.acceptAllChanges();
+
+    expect(useSportsbookStore.getState().selectionByEventId["event-1"]?.selectedOddsSnapshot).toBe(
+      initialSnapshot,
+    );
+    expect(selectHasOddsChanges(useSportsbookStore.getState())).toBe(true);
+  });
 });

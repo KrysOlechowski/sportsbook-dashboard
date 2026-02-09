@@ -4,6 +4,7 @@ import {
   calculatePotentialWin,
   calculateTotalOdds,
 } from "@/domain/calculations";
+import { isValidOdds } from "@/domain/odds";
 import type {
   DomainSnapshot,
   EventId,
@@ -77,14 +78,15 @@ export const useSportsbookStore = create<SportsbookStore>((set, get) => ({
   },
   selectOutcome: (eventId, outcomeId) => {
     const { selectionByEventId, oddsByOutcomeId, lockedByOutcomeId } = get();
-    if (lockedByOutcomeId[outcomeId]) {
+    const currentOdds = oddsByOutcomeId[outcomeId];
+    if (lockedByOutcomeId[outcomeId] || !isValidOdds(currentOdds)) {
       return;
     }
 
     const nextSelection: BetSelection = {
       eventId,
       outcomeId,
-      selectedOddsSnapshot: oddsByOutcomeId[outcomeId] ?? 1,
+      selectedOddsSnapshot: currentOdds,
       addedAt: Date.now(),
     };
 
@@ -142,10 +144,12 @@ export const useSportsbookStore = create<SportsbookStore>((set, get) => ({
     const nextSelectionByEventId: Record<EventId, BetSelection> = {};
 
     for (const [eventId, selection] of Object.entries(selectionByEventId)) {
+      const currentOdds = oddsByOutcomeId[selection.outcomeId];
       nextSelectionByEventId[eventId] = {
         ...selection,
-        selectedOddsSnapshot:
-          oddsByOutcomeId[selection.outcomeId] ?? selection.selectedOddsSnapshot,
+        selectedOddsSnapshot: isValidOdds(currentOdds)
+          ? currentOdds
+          : selection.selectedOddsSnapshot,
       };
     }
 
@@ -219,7 +223,12 @@ export const selectMarketIdsForEvent =
 
 export const selectHasOddsChanges = (state: SportsbookStore): boolean =>
   Object.values(state.selectionByEventId).some((selection) => {
-    return state.oddsByOutcomeId[selection.outcomeId] !== selection.selectedOddsSnapshot;
+    const currentOdds = state.oddsByOutcomeId[selection.outcomeId];
+    if (!isValidOdds(currentOdds)) {
+      return true;
+    }
+
+    return currentOdds !== selection.selectedOddsSnapshot;
   });
 
 export const selectTotalOdds = (state: SportsbookStore): number =>

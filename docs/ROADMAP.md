@@ -92,5 +92,5 @@ This roadmap mirrors the recruitment task levels (1–4). Focus on correctness, 
 ## Final Polish
 
 - [✅] Responsive layout (desktop + mobile)
-- [ ] Basic error handling for missing/invalid odds
+- [✅] Basic error handling for missing/invalid odds
 - [ ] Final README update

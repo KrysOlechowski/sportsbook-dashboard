@@ -6,6 +6,7 @@ import {
   buildRandomOddsUpdates,
   getRandomIntervalMs,
   getRandomLockDurationMs,
+  isValidOdds,
 } from "@/domain/odds";
 import { groupEventIdsByLeagueCategory } from "@/domain/grouping";
 import type { DomainSnapshot, EventId, OutcomeId } from "@/domain/types";
@@ -97,7 +98,7 @@ const OddsButton = memo(function OddsButton({
     };
   }, [pulse, outcomeId, clearOutcomePulse]);
 
-  if (!outcome || typeof odds !== "number") {
+  if (!outcome) {
     return null;
   }
 
@@ -105,6 +106,8 @@ const OddsButton = memo(function OddsButton({
   const isSelected = selectedOutcomeId === outcomeId;
   const hasUpPulse = pulse === "up";
   const hasDownPulse = pulse === "down";
+  const isOddsAvailable = isValidOdds(odds);
+  const isDisabled = Boolean(locked) || !isOddsAvailable;
   if (process.env.NEXT_PUBLIC_RENDER_DEBUG === "1") {
     // Optional proof for Level 4: only touched outcome buttons should re-render on ticks.
     console.count(`render:odds-button:${outcomeId}`);
@@ -113,24 +116,28 @@ const OddsButton = memo(function OddsButton({
   return (
     <button
       type="button"
-      disabled={Boolean(locked)}
+      disabled={isDisabled}
       onClick={() => toggleOutcome(eventId, outcomeId)}
       aria-pressed={isSelected}
-      title={locked ? "Updating odds..." : outcome.name}
+      title={
+        locked ? "Updating odds..." : isOddsAvailable ? outcome.name : "Odds unavailable"
+      }
       className={`flex min-w-20 items-center justify-between rounded-md border px-3 py-2 text-sm font-medium transition-colors duration-300 ${
         locked
           ? "cursor-not-allowed border-zinc-300 bg-zinc-100 text-zinc-500"
+          : !isOddsAvailable
+            ? "cursor-not-allowed border-zinc-300 bg-zinc-100 text-zinc-500"
           : hasUpPulse
-          ? "border-emerald-500 bg-emerald-100 text-emerald-900"
+            ? "border-emerald-500 bg-emerald-100 text-emerald-900"
           : hasDownPulse
-            ? "border-rose-500 bg-rose-100 text-rose-900"
+              ? "border-rose-500 bg-rose-100 text-rose-900"
             : isSelected
               ? "border-zinc-900 bg-zinc-900 text-white"
               : "border-zinc-300 bg-white text-zinc-900 hover:border-zinc-400"
       }`}
     >
       <span>{label}</span>
-      <span>{locked ? "..." : formatOdds(odds)}</span>
+      <span>{locked ? "..." : isOddsAvailable ? formatOdds(odds) : "N/A"}</span>
     </button>
   );
 });
@@ -201,9 +208,11 @@ function BetSlip() {
             const currentOdds = oddsByOutcomeId[selection.outcomeId];
             const selectedOddsSnapshot = selection.selectedOddsSnapshot;
             const isReplaced = selection.eventId === lastReplacedEventId;
-            const isOddsChanged = currentOdds !== selectedOddsSnapshot;
+            const isCurrentOddsAvailable = isValidOdds(currentOdds);
+            const isOddsChanged =
+              !isCurrentOddsAvailable || currentOdds !== selectedOddsSnapshot;
 
-            if (!event || !outcome || typeof currentOdds !== "number") {
+            if (!event || !outcome) {
               return null;
             }
 
@@ -229,14 +238,15 @@ function BetSlip() {
                 </div>
                 <p className="mt-1 text-sm text-zinc-600">{outcome.name}</p>
                 <p className="mt-1 text-sm font-medium text-zinc-800">
-                  Current: {formatOdds(currentOdds)}
+                  Current:{" "}
+                  {isCurrentOddsAvailable ? formatOdds(currentOdds) : "N/A"}
                 </p>
                 <p className="mt-1 text-xs text-zinc-600">
                   Snapshot: {formatOdds(selectedOddsSnapshot)}
                 </p>
                 {isOddsChanged ? (
                   <p className="mt-2 inline-flex rounded bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-800">
-                    Odds changed
+                    {isCurrentOddsAvailable ? "Odds changed" : "Odds unavailable"}
                   </p>
                 ) : null}
               </li>

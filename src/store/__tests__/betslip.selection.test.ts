@@ -131,4 +131,16 @@ describe("bet slip selection", () => {
     store.setStake(Number.NaN);
     expect(useSportsbookStore.getState().stake).toBe(0);
   });
+
+  it("does not add selection when odds are invalid", () => {
+    useSportsbookStore.setState((state) => ({
+      oddsByOutcomeId: {
+        ...state.oddsByOutcomeId,
+        "outcome-1": Number.NaN,
+      },
+    }));
+
+    useSportsbookStore.getState().selectOutcome("event-1", "outcome-1");
+    expect(useSportsbookStore.getState().selectionByEventId["event-1"]).toBeUndefined();
+  });
 });
