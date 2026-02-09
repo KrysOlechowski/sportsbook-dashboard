@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 
+import { buildRandomOddsUpdates, getRandomIntervalMs } from "@/domain/odds";
 import type { DomainSnapshot, EventId, OutcomeId } from "@/domain/types";
 import {
   selectPotentialWin,
@@ -250,10 +251,40 @@ export function SportsbookDashboard({ initialSnapshot }: SportsbookDashboardProp
     (state) => state.initializeSnapshot,
   );
   const eventIds = useSportsbookStore((state) => state.eventIds);
+  const applyOddsUpdates = useSportsbookStore((state) => state.applyOddsUpdates);
 
   useEffect(() => {
     initializeSnapshot(initialSnapshot);
   }, [initialSnapshot, initializeSnapshot]);
+
+  useEffect(() => {
+    let timeoutId: number | null = null;
+    let isActive = true;
+
+    const scheduleNextTick = () => {
+      const intervalMs = getRandomIntervalMs();
+
+      timeoutId = window.setTimeout(() => {
+        if (!isActive) {
+          return;
+        }
+
+        const { oddsByOutcomeId } = useSportsbookStore.getState();
+        const updates = buildRandomOddsUpdates(oddsByOutcomeId);
+        applyOddsUpdates(updates);
+        scheduleNextTick();
+      }, intervalMs);
+    };
+
+    scheduleNextTick();
+
+    return () => {
+      isActive = false;
+      if (timeoutId !== null) {
+        window.clearTimeout(timeoutId);
+      }
+    };
+  }, [applyOddsUpdates]);
 
   return (
     <main className="min-h-screen bg-zinc-100 p-4 md:p-8">

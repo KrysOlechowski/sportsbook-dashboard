@@ -39,7 +39,7 @@ This roadmap mirrors the recruitment task levels (1–4). Focus on correctness, 
 - [✅] Remove selection via (X) in Bet Slip
 - [✅] Empty Bet Slip state (must-have)
 - [✅] Stake input with validation (>= 0)
-- [ ] Calculations:
+- [✅] Calculations:
   - [✅] Total Odds (product of snapshots)
   - [✅] Potential Win = Total Odds \* Stake
 
@@ -50,11 +50,11 @@ This roadmap mirrors the recruitment task levels (1–4). Focus on correctness, 
 
 ## Level 3 — Live simulation + odds changed (must-have)
 
-- [ ] Timer: random interval between 10–15 seconds
-- [ ] Update a subset of outcomes:
-  - [ ] `newOdds = oldOdds * random(0.9..1.1)`
-  - [ ] round to 2 decimals
-  - [ ] clamp min 1.01
+- [✅] Timer: random interval between 10–15 seconds
+- [✅] Update a subset of outcomes:
+  - [✅] `newOdds = oldOdds * random(0.9..1.1)`
+  - [✅] round to 2 decimals
+  - [✅] clamp min 1.01
 - [ ] Blink:
   - [ ] green on increase
   - [ ] red on decrease
@@ -70,7 +70,7 @@ This roadmap mirrors the recruitment task levels (1–4). Focus on correctness, 
 
 ### Tests (Jest)
 
-- [ ] Add `src/domain/__tests__/odds.test.ts` (rounding/clamp/multiplier)
+- [✅] Add `src/domain/__tests__/odds.test.ts` (rounding/clamp/multiplier)
 - [ ] Add `src/store/__tests__/odds.updates.test.ts` (pulse + lock + targeted updates)
 
 ## Level 4 — Performance / render optimization
