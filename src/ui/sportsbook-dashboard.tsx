@@ -52,7 +52,7 @@ export function SportsbookDashboard({
           <div className="flex flex-1 flex-col gap-5">
             {eventGroups.map((group) => (
               <section key={group.id}>
-                <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-zinc-600">
+                <h2 className="mb-3 border-l-4 border-zinc-900 bg-white px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-zinc-900 shadow-sm">
                   {group.sportName} • {group.countryName} • {group.leagueName}
                 </h2>
                 <ul className="flex flex-col gap-3">
