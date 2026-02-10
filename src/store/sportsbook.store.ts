@@ -250,6 +250,10 @@ export const useSportsbookStore = create<SportsbookStore>((set, get) => ({
     set({ selectionByEventId: nextSelectionByEventId });
   },
   setOutcomeLock: (outcomeId, locked) => {
+    if (!get().outcomesById[outcomeId]) {
+      return;
+    }
+
     if (get().lockedByOutcomeId[outcomeId] === locked) {
       return;
     }
@@ -265,8 +269,13 @@ export const useSportsbookStore = create<SportsbookStore>((set, get) => ({
       return;
     }
 
-    const { lockedByOutcomeId } = get();
-    const hasAnyChange = outcomeIds.some(
+    const { lockedByOutcomeId, outcomesById } = get();
+    const knownOutcomeIds = outcomeIds.filter((outcomeId) => outcomesById[outcomeId]);
+    if (knownOutcomeIds.length === 0) {
+      return;
+    }
+
+    const hasAnyChange = knownOutcomeIds.some(
       (outcomeId) => lockedByOutcomeId[outcomeId] !== locked,
     );
     if (!hasAnyChange) {
@@ -276,7 +285,7 @@ export const useSportsbookStore = create<SportsbookStore>((set, get) => ({
     set((state) => {
       const nextLockedByOutcomeId = { ...state.lockedByOutcomeId };
 
-      for (const outcomeId of outcomeIds) {
+      for (const outcomeId of knownOutcomeIds) {
         nextLockedByOutcomeId[outcomeId] = locked;
       }
 
@@ -307,6 +316,10 @@ export const useSportsbookStore = create<SportsbookStore>((set, get) => ({
       const nextLockedByOutcomeId = { ...state.lockedByOutcomeId };
 
       for (const update of updates) {
+        if (!state.outcomesById[update.outcomeId] || !isValidOdds(update.odds)) {
+          continue;
+        }
+
         const previousOdds = state.oddsByOutcomeId[update.outcomeId];
         nextOddsByOutcomeId[update.outcomeId] = update.odds;
         nextLockedByOutcomeId[update.outcomeId] = false;

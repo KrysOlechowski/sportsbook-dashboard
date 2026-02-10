@@ -134,4 +134,36 @@ describe("odds updates", () => {
     expect(after.pulseByOutcomeId).toBe(beforePulseByOutcomeId);
     expect(after.lockedByOutcomeId).toBe(beforeLockedByOutcomeId);
   });
+
+  it("ignores updates for unknown outcomes and invalid odds values", () => {
+    const store = useSportsbookStore.getState();
+    store.setOutcomeLock("outcome-1", true);
+
+    store.applyOddsUpdates([
+      { outcomeId: "outcome-unknown", odds: 5.5 },
+      { outcomeId: "outcome-1", odds: Number.NaN },
+      { outcomeId: "outcome-2", odds: 0.5 },
+    ]);
+
+    const state = useSportsbookStore.getState();
+    expect(state.oddsByOutcomeId["outcome-1"]).toBe(2.0);
+    expect(state.oddsByOutcomeId["outcome-2"]).toBe(3.0);
+    expect(state.oddsByOutcomeId["outcome-unknown"]).toBeUndefined();
+    expect(state.lockedByOutcomeId["outcome-1"]).toBe(true);
+  });
+
+  it("ignores lock operations for unknown outcomes", () => {
+    const store = useSportsbookStore.getState();
+
+    const before = useSportsbookStore.getState().lockedByOutcomeId;
+    store.setOutcomeLock("outcome-unknown", true);
+    store.setOutcomeLocks(["outcome-unknown"], true);
+
+    const after = useSportsbookStore.getState().lockedByOutcomeId;
+    expect(after).toBe(before);
+
+    store.setOutcomeLocks(["outcome-unknown", "outcome-1"], true);
+    expect(useSportsbookStore.getState().lockedByOutcomeId["outcome-1"]).toBe(true);
+    expect(useSportsbookStore.getState().lockedByOutcomeId["outcome-unknown"]).toBeUndefined();
+  });
 });
