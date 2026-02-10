@@ -118,6 +118,26 @@ describe("odds updates", () => {
     );
   });
 
+
+  it("does not mutate lock map when setOutcomeLock receives unchanged value", () => {
+    const store = useSportsbookStore.getState();
+
+    store.setOutcomeLock("outcome-1", false);
+    const before = useSportsbookStore.getState().lockedByOutcomeId;
+
+    store.setOutcomeLock("outcome-1", false);
+
+    expect(useSportsbookStore.getState().lockedByOutcomeId).toBe(before);
+  });
+
+  it("does not mutate pulse map when clearOutcomePulse is called for empty pulse", () => {
+    const store = useSportsbookStore.getState();
+    const before = useSportsbookStore.getState().pulseByOutcomeId;
+
+    store.clearOutcomePulse("outcome-1");
+
+    expect(useSportsbookStore.getState().pulseByOutcomeId).toBe(before);
+  });
   it("does not mutate state when updates batch is empty", () => {
     const store = useSportsbookStore.getState();
     store.applyOddsUpdates([{ outcomeId: "outcome-1", odds: 2.2 }]);

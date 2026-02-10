@@ -217,6 +217,11 @@ export const useSportsbookStore = create<SportsbookStore>((set, get) => ({
     set({ selectionByEventId: nextSelectionByEventId });
   },
   setOutcomeLock: (outcomeId, locked) => {
+    const currentLockState = get().lockedByOutcomeId[outcomeId] ?? false;
+    if (currentLockState === locked) {
+      return;
+    }
+
     set((state) => ({
       lockedByOutcomeId: {
         ...state.lockedByOutcomeId,
@@ -250,6 +255,11 @@ export const useSportsbookStore = create<SportsbookStore>((set, get) => ({
     });
   },
   clearOutcomePulse: (outcomeId) => {
+    const currentPulse = get().pulseByOutcomeId[outcomeId];
+    if (currentPulse === null || typeof currentPulse === "undefined") {
+      return;
+    }
+
     set((state) => ({
       pulseByOutcomeId: {
         ...state.pulseByOutcomeId,
