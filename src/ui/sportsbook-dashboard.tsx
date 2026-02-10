@@ -89,6 +89,7 @@ export function SportsbookDashboard({
             <div className="mb-3 flex justify-end">
               <button
                 type="button"
+                aria-label="Close Bet Slip"
                 onClick={() => setIsMobileBetSlipOpen(false)}
                 className="inline-flex h-8 w-8 items-center justify-center rounded border border-zinc-300 bg-white text-sm font-semibold text-zinc-700"
               >

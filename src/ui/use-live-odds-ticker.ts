@@ -9,16 +9,24 @@ import { useSportsbookStore } from "@/store/sportsbook.store";
 
 export const useLiveOddsTicker = (): void => {
   const applyOddsUpdates = useSportsbookStore((state) => state.applyOddsUpdates);
-  const setOutcomeLock = useSportsbookStore((state) => state.setOutcomeLock);
+  const setOutcomeLocks = useSportsbookStore((state) => state.setOutcomeLocks);
 
   useEffect(() => {
-    const activeTimeoutIds: number[] = [];
+    const activeTimeoutIds = new Set<number>();
     let isActive = true;
+    const scheduleTimeout = (callback: () => void, delayMs: number): void => {
+      let timeoutId = 0;
+      timeoutId = window.setTimeout(() => {
+        activeTimeoutIds.delete(timeoutId);
+        callback();
+      }, delayMs);
+      activeTimeoutIds.add(timeoutId);
+    };
 
     const scheduleNextTick = () => {
       const intervalMs = getRandomIntervalMs();
 
-      const tickTimeoutId = window.setTimeout(() => {
+      scheduleTimeout(() => {
         if (!isActive) {
           return;
         }
@@ -26,32 +34,29 @@ export const useLiveOddsTicker = (): void => {
         const { oddsByOutcomeId } = useSportsbookStore.getState();
         const updates = buildRandomOddsUpdates(oddsByOutcomeId);
         const lockDurationMs = getRandomLockDurationMs();
+        const outcomeIds = updates.map((update) => update.outcomeId);
 
-        for (const update of updates) {
-          setOutcomeLock(update.outcomeId, true);
-        }
+        setOutcomeLocks(outcomeIds, true);
 
-        const applyTimeoutId = window.setTimeout(() => {
+        scheduleTimeout(() => {
           if (!isActive) {
             return;
           }
           applyOddsUpdates(updates);
         }, lockDurationMs);
-        activeTimeoutIds.push(applyTimeoutId);
 
         scheduleNextTick();
       }, intervalMs);
-
-      activeTimeoutIds.push(tickTimeoutId);
     };
 
     scheduleNextTick();
 
     return () => {
       isActive = false;
-      for (const timeoutId of activeTimeoutIds) {
+      for (const timeoutId of activeTimeoutIds.values()) {
         window.clearTimeout(timeoutId);
       }
+      activeTimeoutIds.clear();
     };
-  }, [applyOddsUpdates, setOutcomeLock]);
+  }, [applyOddsUpdates, setOutcomeLocks]);
 };

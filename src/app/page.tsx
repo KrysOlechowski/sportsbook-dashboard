@@ -1,10 +1,10 @@
 import rawDashboardEvents from "@/data/betting_dashboard_data.json";
 import { mapRawDashboardEventsToDomainSnapshot } from "@/domain/mapping";
-import type { RawDashboardEvent } from "@/domain/types";
+import { parseRawDashboardEvents } from "@/domain/raw-dashboard-guard";
 import { SportsbookDashboard } from "@/ui/sportsbook-dashboard";
 
 const snapshot = mapRawDashboardEventsToDomainSnapshot(
-  rawDashboardEvents as RawDashboardEvent[],
+  parseRawDashboardEvents(rawDashboardEvents),
 );
 
 export default function Home() {

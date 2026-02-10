@@ -38,6 +38,7 @@ export type SportsbookActions = {
   setStake: (value: number) => void;
   acceptAllChanges: () => void;
   setOutcomeLock: (outcomeId: OutcomeId, locked: boolean) => void;
+  setOutcomeLocks: (outcomeIds: OutcomeId[], locked: boolean) => void;
   clearOutcomePulse: (outcomeId: OutcomeId) => void;
   applyOddsUpdates: (updates: OddsUpdate[]) => void;
 };
@@ -222,6 +223,31 @@ export const useSportsbookStore = create<SportsbookStore>((set, get) => ({
         [outcomeId]: locked,
       },
     }));
+  },
+  setOutcomeLocks: (outcomeIds, locked) => {
+    if (outcomeIds.length === 0) {
+      return;
+    }
+
+    const { lockedByOutcomeId } = get();
+    const hasAnyChange = outcomeIds.some(
+      (outcomeId) => lockedByOutcomeId[outcomeId] !== locked,
+    );
+    if (!hasAnyChange) {
+      return;
+    }
+
+    set((state) => {
+      const nextLockedByOutcomeId = { ...state.lockedByOutcomeId };
+
+      for (const outcomeId of outcomeIds) {
+        nextLockedByOutcomeId[outcomeId] = locked;
+      }
+
+      return {
+        lockedByOutcomeId: nextLockedByOutcomeId,
+      };
+    });
   },
   clearOutcomePulse: (outcomeId) => {
     set((state) => ({

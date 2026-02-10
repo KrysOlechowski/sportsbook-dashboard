@@ -17,6 +17,8 @@ import {
   parseStakeInputValue,
 } from "@/ui/stake-input";
 
+const BET_PLACED_MESSAGE = "Bet placed successfully.";
+
 const BetSlipItem = memo(function BetSlipItem({
   selection,
   isReplaced,
@@ -75,6 +77,134 @@ const BetSlipItem = memo(function BetSlipItem({
   );
 });
 
+const BetPlacedToast = ({ message }: { message: string | null }) => {
+  if (!message) {
+    return null;
+  }
+
+  return (
+    <p
+      aria-live="polite"
+      className="pointer-events-none fixed top-4 right-4 z-50 rounded-md border border-emerald-300 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-800 shadow-sm lg:px-4.5 lg:py-3 lg:text-lg"
+    >
+      {message}
+    </p>
+  );
+};
+
+const BetSlipSummary = ({
+  totalOdds,
+  potentialWin,
+}: {
+  totalOdds: number;
+  potentialWin: number;
+}) => (
+  <div className="mt-4 rounded-lg border border-zinc-200 bg-zinc-50 p-3">
+    <div className="flex items-center justify-between text-sm">
+      <span className="text-zinc-600">Total Odds</span>
+      <span className="font-semibold text-zinc-900">{formatOdds(totalOdds)}</span>
+    </div>
+    <div className="mt-2 flex items-center justify-between text-sm">
+      <span className="text-zinc-600">Potential Win</span>
+      <span className="font-semibold text-zinc-900">
+        {formatOdds(potentialWin)}
+      </span>
+    </div>
+  </div>
+);
+
+const BetSlipActions = ({
+  hasOddsChanges,
+  canPlaceBet,
+  onAcceptAllChanges,
+  onPlaceBet,
+}: {
+  hasOddsChanges: boolean;
+  canPlaceBet: boolean;
+  onAcceptAllChanges: () => void;
+  onPlaceBet: () => void;
+}) => (
+  <div className="mt-3 flex flex-col gap-2">
+    {hasOddsChanges ? (
+      <button
+        type="button"
+        onClick={onAcceptAllChanges}
+        className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm font-semibold text-zinc-900 hover:border-zinc-400"
+      >
+        Accept all changes
+      </button>
+    ) : null}
+    <button
+      type="button"
+      disabled={!canPlaceBet}
+      onClick={onPlaceBet}
+      className={`w-full rounded-md px-3 py-2 text-sm font-semibold transition-colors ${
+        !canPlaceBet
+          ? "cursor-not-allowed bg-zinc-300 text-zinc-600"
+          : "bg-zinc-900 text-white hover:bg-zinc-800"
+      }`}
+    >
+      Place Bet
+    </button>
+  </div>
+);
+
+const useTimedMessage = (durationMs: number) => {
+  const [message, setMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!message) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setMessage(null);
+    }, durationMs);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [durationMs, message]);
+
+  return {
+    message,
+    setMessage,
+  };
+};
+
+const useStakeInput = (stake: number, setStake: (value: number) => void) => {
+  const [stakeInputValue, setStakeInputValue] = useState<string>(() =>
+    formatStakeInputValue(stake),
+  );
+
+  useEffect(() => {
+    setStakeInputValue(formatStakeInputValue(stake));
+  }, [stake]);
+
+  const handleStakeInputChange = (value: string) => {
+    const normalizedValue = normalizeStakeInputValue(value);
+    if (!isStakeInputValueValid(normalizedValue)) {
+      return;
+    }
+
+    setStakeInputValue(normalizedValue);
+    const parsedValue = parseStakeInputValue(normalizedValue);
+    if (parsedValue !== null) {
+      setStake(parsedValue);
+    }
+  };
+
+  const handleStakeInputBlur = () => {
+    setStakeInputValue(formatStakeInputValue(stake));
+  };
+
+  return {
+    stakeInputValue,
+    handleStakeInputChange,
+    handleStakeInputBlur,
+  };
+};
+
 export const BetSlip = memo(function BetSlip() {
   const selectionByEventId = useSportsbookStore(
     (state) => state.selectionByEventId,
@@ -94,10 +224,10 @@ export const BetSlip = memo(function BetSlip() {
   const acceptAllChanges = useSportsbookStore(
     (state) => state.acceptAllChanges,
   );
-  const [betPlacedMessage, setBetPlacedMessage] = useState<string | null>(null);
-  const [stakeInputValue, setStakeInputValue] = useState<string>(() =>
-    formatStakeInputValue(stake),
-  );
+  const { message: betPlacedMessage, setMessage: setBetPlacedMessage } =
+    useTimedMessage(2800);
+  const { stakeInputValue, handleStakeInputBlur, handleStakeInputChange } =
+    useStakeInput(stake, setStake);
 
   const selections = Object.values(selectionByEventId);
   const canPlaceBet =
@@ -120,61 +250,19 @@ export const BetSlip = memo(function BetSlip() {
     };
   }, [lastReplacedEventId, clearLastReplacedEventId]);
 
-  useEffect(() => {
-    if (!betPlacedMessage) {
-      return;
-    }
-
-    const timeoutId = window.setTimeout(() => {
-      setBetPlacedMessage(null);
-    }, 2800);
-
-    return () => {
-      window.clearTimeout(timeoutId);
-    };
-  }, [betPlacedMessage]);
-
-  useEffect(() => {
-    setStakeInputValue(formatStakeInputValue(stake));
-  }, [stake]);
-
   const handlePlaceBet = () => {
     if (!canPlaceBet) {
       return;
     }
 
     clearSelections();
-    setBetPlacedMessage("Bet placed successfully.");
-  };
-
-  const handleStakeInputChange = (value: string) => {
-    const normalizedValue = normalizeStakeInputValue(value);
-    if (!isStakeInputValueValid(normalizedValue)) {
-      return;
-    }
-
-    setStakeInputValue(normalizedValue);
-    const parsedValue = parseStakeInputValue(normalizedValue);
-    if (parsedValue !== null) {
-      setStake(parsedValue);
-    }
-  };
-
-  const handleStakeInputBlur = () => {
-    setStakeInputValue(formatStakeInputValue(stake));
+    setBetPlacedMessage(BET_PLACED_MESSAGE);
   };
 
   return (
     <aside className="w-full rounded-xl border border-zinc-200 bg-white p-4 shadow-sm lg:w-96">
       <h2 className="text-lg font-semibold text-zinc-900">Bet Slip</h2>
-      {betPlacedMessage ? (
-        <p
-          aria-live="polite"
-          className="pointer-events-none fixed top-4 right-4 z-50 rounded-md border border-emerald-300 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-800 shadow-sm lg:px-[18px] lg:py-3 lg:text-lg"
-        >
-          {betPlacedMessage}
-        </p>
-      ) : null}
+      <BetPlacedToast message={betPlacedMessage} />
 
       <div className="mt-3">
         <label
@@ -210,44 +298,13 @@ export const BetSlip = memo(function BetSlip() {
         </ul>
       )}
 
-      <div className="mt-4 rounded-lg border border-zinc-200 bg-zinc-50 p-3">
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-zinc-600">Total Odds</span>
-          <span className="font-semibold text-zinc-900">
-            {formatOdds(totalOdds)}
-          </span>
-        </div>
-        <div className="mt-2 flex items-center justify-between text-sm">
-          <span className="text-zinc-600">Potential Win</span>
-          <span className="font-semibold text-zinc-900">
-            {formatOdds(potentialWin)}
-          </span>
-        </div>
-      </div>
-
-      <div className="mt-3 flex flex-col gap-2">
-        {hasOddsChanges ? (
-          <button
-            type="button"
-            onClick={acceptAllChanges}
-            className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm font-semibold text-zinc-900 hover:border-zinc-400"
-          >
-            Accept all changes
-          </button>
-        ) : null}
-        <button
-          type="button"
-          disabled={!canPlaceBet}
-          onClick={handlePlaceBet}
-          className={`w-full rounded-md px-3 py-2 text-sm font-semibold transition-colors ${
-            !canPlaceBet
-              ? "cursor-not-allowed bg-zinc-300 text-zinc-600"
-              : "bg-zinc-900 text-white hover:bg-zinc-800"
-          }`}
-        >
-          Place Bet
-        </button>
-      </div>
+      <BetSlipSummary totalOdds={totalOdds} potentialWin={potentialWin} />
+      <BetSlipActions
+        hasOddsChanges={hasOddsChanges}
+        canPlaceBet={canPlaceBet}
+        onAcceptAllChanges={acceptAllChanges}
+        onPlaceBet={handlePlaceBet}
+      />
     </aside>
   );
 });
