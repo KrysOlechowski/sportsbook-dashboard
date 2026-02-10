@@ -9,13 +9,13 @@ import {
   selectPotentialWin,
   selectTotalOdds,
 } from "@/store/sportsbook.selectors";
+import { formatOdds } from "@/ui/formatters";
 import {
   formatStakeInputValue,
   isStakeInputValueValid,
   normalizeStakeInputValue,
   parseStakeInputValue,
 } from "@/ui/stake-input";
-import { formatOdds } from "@/ui/formatters";
 
 const BetSlipItem = memo(function BetSlipItem({
   selection,
@@ -75,7 +75,7 @@ const BetSlipItem = memo(function BetSlipItem({
   );
 });
 
-export function BetSlip() {
+export const BetSlip = memo(function BetSlip() {
   const selectionByEventId = useSportsbookStore(
     (state) => state.selectionByEventId,
   );
@@ -200,17 +200,13 @@ export function BetSlip() {
         <p className="mt-3 text-sm text-zinc-500">No selections yet.</p>
       ) : (
         <ul className="mt-3 flex flex-col gap-2">
-          {selections.map((selection) => {
-            const isReplaced = selection.eventId === lastReplacedEventId;
-
-            return (
-              <BetSlipItem
-                key={selection.eventId}
-                selection={selection}
-                isReplaced={isReplaced}
-              />
-            );
-          })}
+          {selections.map((selection) => (
+            <BetSlipItem
+              key={selection.eventId}
+              selection={selection}
+              isReplaced={selection.eventId === lastReplacedEventId}
+            />
+          ))}
         </ul>
       )}
 
@@ -254,4 +250,4 @@ export function BetSlip() {
       </div>
     </aside>
   );
-}
+});

@@ -1,11 +1,7 @@
 import { create } from "zustand";
 
 import { isValidOdds } from "@/domain/odds";
-import type {
-  DomainSnapshot,
-  EventId,
-  OutcomeId,
-} from "@/domain/types";
+import type { DomainSnapshot, EventId, OutcomeId } from "@/domain/types";
 
 export const UI_MARKET_NAME = "1x2";
 
