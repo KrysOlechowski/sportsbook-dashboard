@@ -4,6 +4,7 @@ export const formatStakeInputValue = (value: number): string =>
 export const normalizeStakeInputValue = (value: string): string =>
   value.replace(",", ".");
 
+// Allow partial input (e.g. "12." or empty) while the user is typing.
 export const isStakeInputValueValid = (value: string): boolean =>
   /^\d*\.?\d*$/.test(value);
 

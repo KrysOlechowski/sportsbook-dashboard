@@ -36,6 +36,7 @@ export const useLiveOddsTicker = (): void => {
         const lockDurationMs = getRandomLockDurationMs();
         const outcomeIds = updates.map((update) => update.outcomeId);
 
+        // Lock outcomes briefly to simulate market suspension before odds refresh.
         setOutcomeLocks(outcomeIds, true);
 
         scheduleTimeout(() => {

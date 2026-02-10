@@ -25,6 +25,7 @@ export type SportsbookState = DomainSnapshot & {
   selectionByEventId: Record<EventId, BetSelection>;
   oneXTwoOutcomeIdsByEventId: Record<EventId, OutcomeId[]>;
   stake: number;
+  // Used by the betslip to highlight a selection that replaced an existing one.
   lastReplacedEventId: EventId | null;
 };
 
@@ -315,6 +316,7 @@ export const useSportsbookStore = create<SportsbookStore>((set, get) => ({
           continue;
         }
 
+        // Pulse indicates direction of odds change for the UI animation.
         if (update.odds > previousOdds) {
           nextPulseByOutcomeId[update.outcomeId] = "up";
           continue;

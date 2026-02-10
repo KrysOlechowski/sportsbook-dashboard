@@ -21,6 +21,7 @@ export const groupEventIdsByLeagueCategory = (
       continue;
     }
 
+    // Stable key for grouping events by sport / country / league in the UI.
     const groupId = `${event.category1Name}::${event.category2Name}::${event.category3Name}`;
     if (!groupsById[groupId]) {
       groupsById[groupId] = {
