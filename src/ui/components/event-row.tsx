@@ -3,34 +3,11 @@
 import { memo } from "react";
 
 import type { EventId, OutcomeId } from "@/domain/types";
-import {
-  UI_MARKET_NAME,
-  type SportsbookStore,
-  useSportsbookStore,
-} from "@/store/sportsbook.store";
+import { useSportsbookStore } from "@/store/sportsbook.store";
 import { formatEventStart } from "@/ui/formatters";
 import { OddsButton } from "@/ui/components/odds-button";
 
 const EMPTY_OUTCOME_IDS: OutcomeId[] = [];
-
-const selectOneXTwoOutcomeIdsByEventId =
-  (eventId: EventId) =>
-  (state: SportsbookStore): OutcomeId[] => {
-    const event = state.eventsById[eventId];
-    if (!event) {
-      return EMPTY_OUTCOME_IDS;
-    }
-
-    const marketId = event.marketIds.find(
-      (candidateMarketId) =>
-        state.marketsById[candidateMarketId]?.name === UI_MARKET_NAME,
-    );
-    if (!marketId) {
-      return EMPTY_OUTCOME_IDS;
-    }
-
-    return state.marketsById[marketId]?.outcomeIds ?? EMPTY_OUTCOME_IDS;
-  };
 
 type EventRowProps = {
   eventId: EventId;
@@ -39,7 +16,7 @@ type EventRowProps = {
 export const EventRow = memo(function EventRow({ eventId }: EventRowProps) {
   const event = useSportsbookStore((state) => state.eventsById[eventId]);
   const oneXTwoOutcomeIds = useSportsbookStore(
-    selectOneXTwoOutcomeIdsByEventId(eventId),
+    (state) => state.oneXTwoOutcomeIdsByEventId[eventId] ?? EMPTY_OUTCOME_IDS,
   );
 
   if (!event) {

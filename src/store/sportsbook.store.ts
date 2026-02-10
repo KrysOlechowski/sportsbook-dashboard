@@ -23,6 +23,7 @@ export type SportsbookState = DomainSnapshot & {
   pulseByOutcomeId: Record<OutcomeId, OddsPulse>;
   lockedByOutcomeId: Record<OutcomeId, boolean>;
   selectionByEventId: Record<EventId, BetSelection>;
+  oneXTwoOutcomeIdsByEventId: Record<EventId, OutcomeId[]>;
   stake: number;
   lastReplacedEventId: EventId | null;
 };
@@ -81,6 +82,33 @@ const isOutcomeLinkedToEvent = (
   return market.outcomeIds.includes(outcomeId);
 };
 
+const buildOneXTwoOutcomeIdsByEventId = (
+  snapshot: DomainSnapshot,
+): Record<EventId, OutcomeId[]> => {
+  const oneXTwoOutcomeIdsByEventId: Record<EventId, OutcomeId[]> = {};
+
+  for (const eventId of snapshot.eventIds) {
+    const event = snapshot.eventsById[eventId];
+    if (!event) {
+      continue;
+    }
+
+    const marketId = event.marketIds.find(
+      (candidateMarketId) =>
+        snapshot.marketsById[candidateMarketId]?.name === UI_MARKET_NAME,
+    );
+    if (!marketId) {
+      oneXTwoOutcomeIdsByEventId[eventId] = [];
+      continue;
+    }
+
+    oneXTwoOutcomeIdsByEventId[eventId] =
+      snapshot.marketsById[marketId]?.outcomeIds ?? [];
+  }
+
+  return oneXTwoOutcomeIdsByEventId;
+};
+
 const EMPTY_SNAPSHOT: DomainSnapshot = {
   eventIds: [],
   eventsById: {},
@@ -94,6 +122,7 @@ const DEFAULT_STATE: SportsbookState = {
   pulseByOutcomeId: {},
   lockedByOutcomeId: {},
   selectionByEventId: {},
+  oneXTwoOutcomeIdsByEventId: {},
   stake: 0,
   lastReplacedEventId: null,
 };
@@ -101,9 +130,12 @@ const DEFAULT_STATE: SportsbookState = {
 export const useSportsbookStore = create<SportsbookStore>((set, get) => ({
   ...DEFAULT_STATE,
   initializeSnapshot: (snapshot) => {
+    const oneXTwoOutcomeIdsByEventId =
+      buildOneXTwoOutcomeIdsByEventId(snapshot);
     set({
       ...DEFAULT_STATE,
       ...snapshot,
+      oneXTwoOutcomeIdsByEventId,
     });
   },
   selectOutcome: (eventId, outcomeId) => {
@@ -217,6 +249,9 @@ export const useSportsbookStore = create<SportsbookStore>((set, get) => ({
     set({ selectionByEventId: nextSelectionByEventId });
   },
   setOutcomeLock: (outcomeId, locked) => {
+    if (get().lockedByOutcomeId[outcomeId] === locked) {
+      return;
+    }
     set((state) => ({
       lockedByOutcomeId: {
         ...state.lockedByOutcomeId,
@@ -250,6 +285,9 @@ export const useSportsbookStore = create<SportsbookStore>((set, get) => ({
     });
   },
   clearOutcomePulse: (outcomeId) => {
+    if (get().pulseByOutcomeId[outcomeId] === null) {
+      return;
+    }
     set((state) => ({
       pulseByOutcomeId: {
         ...state.pulseByOutcomeId,

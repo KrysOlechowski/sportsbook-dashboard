@@ -1,6 +1,7 @@
 "use client";
 
 import { memo, useEffect } from "react";
+import { useShallow } from "zustand/react/shallow";
 
 import { isValidOdds } from "@/domain/odds";
 import type { EventId, OutcomeId } from "@/domain/types";
@@ -16,20 +17,24 @@ export const OddsButton = memo(function OddsButton({
   eventId,
   outcomeId,
 }: OddsButtonProps) {
-  const outcome = useSportsbookStore((state) => state.outcomesById[outcomeId]);
-  const odds = useSportsbookStore((state) => state.oddsByOutcomeId[outcomeId]);
-  const pulse = useSportsbookStore(
-    (state) => state.pulseByOutcomeId[outcomeId],
-  );
-  const locked = useSportsbookStore(
-    (state) => state.lockedByOutcomeId[outcomeId],
-  );
-  const selectedOutcomeId = useSportsbookStore(
-    (state) => state.selectionByEventId[eventId]?.outcomeId ?? null,
-  );
-  const toggleOutcome = useSportsbookStore((state) => state.toggleOutcome);
-  const clearOutcomePulse = useSportsbookStore(
-    (state) => state.clearOutcomePulse,
+  const {
+    outcome,
+    odds,
+    pulse,
+    locked,
+    selectedOutcomeId,
+    toggleOutcome,
+    clearOutcomePulse,
+  } = useSportsbookStore(
+    useShallow((state) => ({
+      outcome: state.outcomesById[outcomeId],
+      odds: state.oddsByOutcomeId[outcomeId],
+      pulse: state.pulseByOutcomeId[outcomeId],
+      locked: state.lockedByOutcomeId[outcomeId],
+      selectedOutcomeId: state.selectionByEventId[eventId]?.outcomeId ?? null,
+      toggleOutcome: state.toggleOutcome,
+      clearOutcomePulse: state.clearOutcomePulse,
+    })),
   );
 
   useEffect(() => {
